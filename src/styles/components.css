@@ -1,0 +1,430 @@
+/* BLACK POPPY CANON — COMPONENTS */
+
+/* ---- Focus visibility (WCAG) ---- */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---- Cards ---- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-1);
+}
+
+.card--hero {
+  background:
+    radial-gradient(120% 160% at 100% 0%,
+      color-mix(in srgb, var(--bp-plum) 12%, transparent) 0%,
+      transparent 55%),
+    var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.card--link {
+  display: block;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+
+.card--link:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+  border-color: var(--color-accent-quiet);
+  color: var(--color-text);
+}
+
+.card__title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  letter-spacing: 0.06em;
+  color: var(--color-heading);
+  margin: 0 0 var(--space-2);
+}
+
+.card__meta {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* ---- Buttons ---- */
+.btn {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  letter-spacing: 0.1em;
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  background: var(--bp-deep-purple);
+  color: var(--bp-full-moon);
+  transition: background var(--duration) var(--ease);
+}
+
+.btn:hover { background: var(--bp-plum); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.btn--ghost:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+
+/* ---- Icon button (theme toggle, menu) ---- */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background var(--duration) var(--ease);
+}
+
+.icon-btn:hover { background: var(--color-surface-2); }
+.icon-btn svg { width: 18px; height: 18px; }
+
+/* ---- Empty state / placeholder views ---- */
+.empty {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.empty__symbol {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto var(--space-4);
+  color: var(--color-accent-quiet);
+}
+
+.empty h2 { margin-bottom: var(--space-2); }
+
+.empty p {
+  margin-inline: auto;
+  color: var(--color-text-muted);
+}
+
+/* ---- Stat row on dashboard ---- */
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.stat__value {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  color: var(--color-heading);
+  line-height: 1;
+}
+
+.stat__label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* ---- 11:11 divider — the Canon's quiet signature ---- */
+.divider-1111 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-6) 0;
+  color: var(--color-accent-quiet);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  letter-spacing: 0.3em;
+}
+
+.divider-1111::before,
+.divider-1111::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+/* ============================================================
+   SPRINT 4.2 — DASHBOARD
+   Parchment background, paper cards, editorial whitespace.
+   Accents: Finch Yellow, Dusty Purple, Hot Pink.
+   ============================================================ */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- Welcome header ---- */
+.dash-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-5);
+  border-bottom: 2px solid var(--bp-finch);
+}
+
+.dash-header__greeting {
+  margin-bottom: var(--space-1);
+}
+
+.dash-header__meta {
+  color: var(--color-text-muted);
+  font-style: italic;
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+.dash-header__search {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  letter-spacing: normal;
+}
+
+.dash-header__search svg { width: 15px; height: 15px; }
+
+.dash-header__search kbd {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: var(--color-text-muted);
+}
+
+/* ---- Two-column dashboard grid ---- */
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .dash-grid { grid-template-columns: 1fr; }
+}
+
+/* ---- Panels (paper cards) ---- */
+.panel {
+  box-shadow: 0 2px 8px rgba(20, 17, 20, 0.06); /* spec: never heavier than 8px */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  position: relative;
+}
+
+.panel .eyebrow { margin-bottom: 0; }
+
+.panel__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel__list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+}
+
+.panel__list li:last-child { border-bottom: none; }
+
+.panel__list--projects li strong {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-base);
+  letter-spacing: 0.05em;
+  color: var(--color-heading);
+}
+
+.panel__meta {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-style: italic;
+  text-align: right;
+}
+
+.panel__meta--block { text-align: left; margin: 0; }
+
+.panel__empty {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-style: italic;
+  margin: 0;
+}
+
+.panel__action {
+  align-self: flex-start;
+  margin-top: var(--space-2);
+  text-decoration: none;
+  font-size: var(--text-sm);
+}
+
+.panel__symbol {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 26px;
+  height: 26px;
+  color: var(--bp-dusty-purple);
+}
+
+/* ---- Footer ---- */
+.dash-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-top: var(--space-7);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+/* ---- Floating search + overlay ---- */
+.search-fab {
+  position: fixed;
+  right: var(--space-5);
+  bottom: var(--space-5);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bp-hot-pink);
+  color: var(--bp-full-moon);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(20, 17, 20, 0.18);
+  z-index: 20;
+  transition: transform var(--duration) var(--ease);
+}
+
+.search-fab:hover { transform: scale(1.06); }
+.search-fab svg { width: 20px; height: 20px; }
+
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 17, 20, 0.45);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 12vh var(--space-4) var(--space-4);
+  z-index: 50;
+}
+
+.search-overlay__panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 6px 8px rgba(20, 17, 20, 0.2);
+  width: min(560px, 100%);
+  padding: var(--space-4);
+}
+
+.search-overlay__input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  padding: var(--space-3);
+  border: none;
+  border-bottom: 2px solid var(--bp-finch);
+  background: transparent;
+  color: var(--color-text);
+}
+
+.search-overlay__input:focus {
+  outline: none;
+  border-bottom-color: var(--bp-hot-pink);
+}
+
+.search-overlay__results { padding: var(--space-3) 0 0; }
+
+.search-overlay__hint {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-style: italic;
+  text-align: right;
+}
+
+@media print {
+  .search-fab, .search-overlay { display: none !important; }
+}
+
+/* ============================================================
+   SPRINT 4.3 — LIBRARY, BOOKS, ENTRIES
+   ============================================================ */
+
+.book-card {
+  position: relative;
+  padding-left: calc(var(--space-5) + 10px);
+  overflow: hidden;
+}
+
+.book-card__spine {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 10px;
+  background: linear-gradient(
+    to bottom,
+    var(--bp-finch),
+    var(--bp-dusty-purple)
+  );
+}
+
+.crumb {
+  display: inline-block;
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-4);
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.crumb:hover { color: var(--color-accent); }
+
+.entry-body {
+  margin-top: var(--space-4);
+  white-space: pre-wrap;
+}

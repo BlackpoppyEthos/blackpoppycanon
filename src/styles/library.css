@@ -1,0 +1,232 @@
+/* ============================================================
+   BLACK POPPY CANON — THE LIVING LIBRARY (Sprint 4.3)
+   Parchment. Paper cards. Editorial spacing. Minimal shadows.
+   No glassmorphism. No gradients. No skeuomorphic bookshelves.
+   The Books themselves provide the personality.
+   ============================================================ */
+
+/* ---- Header ---- */
+.library-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-5);
+}
+
+.library-header h2 { margin-bottom: var(--space-1); }
+
+.library-header__counts {
+  font-style: italic;
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+/* ---- Search ---- */
+.library-search { margin-bottom: var(--space-4); }
+
+.library-search__input {
+  width: 100%;
+  max-width: 480px;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.library-search__input:focus {
+  outline: none;
+  border-color: var(--bp-finch);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--bp-finch) 30%, transparent);
+}
+
+/* ---- Quick filters ---- */
+.quick-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+.quick-filters__btn {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
+}
+
+.quick-filters__btn:hover {
+  color: var(--color-text);
+  background: var(--color-surface-2);
+}
+
+.quick-filters__btn[aria-selected="true"] {
+  background: var(--bp-deep-purple);
+  border-color: var(--bp-deep-purple);
+  color: var(--bp-full-moon);
+}
+
+/* ---- Book grid: 4 / 2 / 1 columns ---- */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+@media (max-width: 1100px) {
+  .book-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .book-grid { grid-template-columns: 1fr; }
+}
+
+/* ---- Book tile ---- */
+.book-tile {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 4px rgba(20, 17, 20, 0.05);
+  transition: transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+
+.book-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(20, 17, 20, 0.09);
+  border-color: var(--bp-dusty-purple);
+}
+
+.book-tile__link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  color: var(--color-text);
+  text-decoration: none;
+  height: 100%;
+}
+
+.book-tile__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.book-tile__icon {
+  width: 22px;
+  height: 22px;
+  color: var(--bp-deep-purple);
+}
+
+.book-tile__status {
+  font-size: var(--text-xs);
+  font-style: italic;
+  color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: var(--space-6);
+}
+
+.book-tile__status::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bp-gray);
+}
+
+.book-tile__status--looking-glass::before { background: var(--bp-dusty-purple); }
+.book-tile__status--atelier::before       { background: var(--bp-finch); }
+.book-tile__status--canon::before         { background: var(--bp-sage); }
+.book-tile__status--archived::before      { background: var(--bp-gray); }
+
+.book-tile__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-lg);
+  letter-spacing: 0.05em;
+  color: var(--color-heading);
+  margin: 0;
+}
+
+.book-tile__desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin: 0;
+  flex: 1;
+}
+
+.book-tile__meta {
+  font-size: var(--text-xs);
+  font-style: italic;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ---- Favorite star ---- */
+.book-tile__fav {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color var(--duration) var(--ease), transform var(--duration) var(--ease);
+}
+
+.book-tile__fav:hover { transform: scale(1.15); color: var(--bp-finch); }
+.book-tile__fav.is-fav { color: var(--bp-finch); }
+
+/* ---- Empty shelf ---- */
+.library-empty {
+  text-align: center;
+  padding: var(--space-7) var(--space-4);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  margin-bottom: var(--space-6);
+}
+
+.library-empty h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  letter-spacing: 0.05em;
+  color: var(--color-heading);
+  margin-bottom: var(--space-2);
+}
+
+.library-empty .btn {
+  text-decoration: none;
+  display: inline-block;
+  margin-top: var(--space-3);
+}
+
+/* ---- Recent activity ---- */
+.recent-activity { margin-bottom: var(--space-5); }
+
+/* ---- Print: shelves become a reading list ---- */
+@media print {
+  .library-search,
+  .quick-filters,
+  .book-tile__fav { display: none !important; }
+  .book-grid { grid-template-columns: 1fr !important; }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "Black Poppy Canon",
+  "short_name": "BP Canon",
+  "description": "The living Canon of the Black Poppy Universe — principles, symbols, systems, and stories.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F5F0E8",
+  "theme_color": "#F5F0E8",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

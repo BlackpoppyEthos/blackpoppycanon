@@ -1,0 +1,113 @@
+/* ============================================================
+   BLACK POPPY CANON — DESIGN TOKENS
+   Palette: black, deep purple, silver, dark rose,
+   full moon white, hot pink, gray. Never gold.
+   Light is the default theme.
+   ============================================================ */
+
+:root {
+  /* ---- Brand color primitives ---- */
+  --bp-black:           #141114;
+  --bp-ink:             #2B262B;
+  --bp-deep-purple:     #4A3459;
+  --bp-plum:            #6F547A;
+  --bp-dark-rose:       #8E4A5F;
+  --bp-hot-pink:        #E24E9B;
+  --bp-silver:          #C6C2CC;
+  --bp-gray:            #8A8590;
+  --bp-slate:           #6E6A75;
+  --bp-full-moon:       #F5F0E8;
+  --bp-cream-stone:     #EFE8DC;
+  --bp-warm-linen:      #E7DECF;
+  --bp-paper:           #FCFAF5;
+  --bp-sage:            #4D8B5E;
+  --bp-finch:           #F3CF39;
+  --bp-dusty-purple:    #8B7A9E;
+
+  /* ---- Semantic tokens (light default) ---- */
+  --color-bg:           var(--bp-full-moon);
+  --color-surface:      var(--bp-paper);
+  --color-surface-2:    var(--bp-cream-stone);
+  --color-text:         var(--bp-ink);
+  --color-text-muted:   var(--bp-slate);
+  --color-heading:      var(--bp-deep-purple);
+  --color-accent:       var(--bp-hot-pink);
+  --color-accent-quiet: var(--bp-dark-rose);
+  --color-border:       color-mix(in srgb, var(--bp-silver) 55%, transparent);
+  --color-focus:        var(--bp-hot-pink);
+  --color-link:         var(--bp-dark-rose);
+  --color-sidebar-bg:   var(--bp-ink);
+  --color-sidebar-text: var(--bp-full-moon);
+  --color-sidebar-muted:var(--bp-silver);
+  --color-success:      var(--bp-sage);
+
+  /* ---- Typography ---- */
+  --font-display: "Bebas Neue", "Arial Narrow", sans-serif;
+  --font-body:    "Libre Baskerville", Georgia, serif;
+
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.1875rem;
+  --text-xl:   1.5rem;
+  --text-2xl:  2rem;
+  --text-3xl:  2.75rem;
+
+  /* ---- Spacing scale ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* ---- Shape & elevation ---- */
+  --radius-sm: 6px;
+  --radius:    12px;
+  --radius-lg: 18px;
+  --shadow-1: 0 1px 3px rgba(20, 17, 20, 0.08);
+  --shadow-2: 0 6px 24px rgba(20, 17, 20, 0.10);
+
+  /* ---- Layout ---- */
+  --sidebar-width: 248px;
+  --header-height: 64px;
+  --content-max: 1080px;
+
+  /* ---- Motion ---- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration: 180ms;
+
+  color-scheme: light;
+}
+
+/* ---- Dark theme: the Canon at night ---- */
+[data-theme="dark"] {
+  --color-bg:           #171319;
+  --color-surface:      #211C24;
+  --color-surface-2:    #2A2430;
+  --color-text:         #EDE7EF;
+  --color-text-muted:   #A79FB0;
+  --color-heading:      #CDB8E0;
+  --color-accent:       var(--bp-hot-pink);
+  --color-accent-quiet: #C97A93;
+  --color-border:       rgba(198, 194, 204, 0.18);
+  --color-link:         #D98BAC;
+  --color-sidebar-bg:   #100D12;
+  --color-sidebar-text: #EDE7EF;
+  --color-sidebar-muted:#8A8590;
+
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 6px 24px rgba(0, 0, 0, 0.45);
+
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --duration: 0ms; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

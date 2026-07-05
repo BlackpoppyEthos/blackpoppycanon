@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The Black Poppy Canon — a living collection of principles, symbols, systems, and stories of the Black Poppy Universe.">
+  <meta name="theme-color" content="#F5F0E8">
+  <title>Black Poppy Canon</title>
+
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./src/styles/variables.css">
+  <link rel="stylesheet" href="./src/styles/typography.css">
+  <link rel="stylesheet" href="./src/styles/layout.css">
+  <link rel="stylesheet" href="./src/styles/components.css">
+  <link rel="stylesheet" href="./src/styles/library.css">
+  <link rel="stylesheet" href="./src/styles/entry.css">
+  <link rel="stylesheet" href="./src/styles/print.css" media="print">
+
+  <script>
+    // Apply saved theme before first paint (no flash)
+    try {
+      const t = localStorage.getItem('bpc-theme');
+      if (t) document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <div id="app" class="app">
+    <!-- Shell is rendered by src/app.js -->
+    <noscript>
+      <p style="padding:2rem;font-family:serif;">
+        The Black Poppy Canon requires JavaScript. Please enable it to enter the Canon.
+      </p>
+    </noscript>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

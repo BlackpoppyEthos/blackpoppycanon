@@ -1,0 +1,52 @@
+/* BLACK POPPY CANON — PRINT
+   The Canon prints like a page from a well-loved journal:
+   no chrome, ink on paper, room to breathe. */
+
+@page {
+  margin: 2cm;
+}
+
+.sidebar,
+.header__actions,
+.menu-toggle,
+.scrim,
+.skip-link,
+.btn {
+  display: none !important;
+}
+
+.app {
+  display: block !important;
+}
+
+body {
+  background: #fff !important;
+  color: #1a1a1a !important;
+  font-size: 11pt;
+}
+
+.main { padding: 0 !important; }
+.main__inner { max-width: none !important; }
+
+.card,
+.card--hero,
+.empty {
+  border: none !important;
+  box-shadow: none !important;
+  background: none !important;
+  padding: 0 0 1.5em !important;
+  break-inside: avoid;
+}
+
+h1, h2, h3 { color: #1a1a1a !important; }
+
+a {
+  color: #1a1a1a !important;
+  text-decoration: none;
+}
+
+a[href^="http"]::after {
+  content: " (" attr(href) ")";
+  font-size: 9pt;
+  color: #666;
+}
