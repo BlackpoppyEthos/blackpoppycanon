@@ -1,0 +1,258 @@
+/* ============================================================
+   BLACK POPPY CANON — RELATIONSHIP ENGINE (Sprint 4.5 · APP-005)
+   Thin charcoal connector lines. Small relationship chips.
+   Editorial spacing. Calm and organic — never neon, never a
+   technical network diagram.
+   ============================================================ */
+
+/* ---- badges: the kind of connection, quietly colored ---- */
+
+.rel-badge {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid;
+  white-space: nowrap;
+  background: transparent;
+}
+
+.rel-badge--stone    { color: var(--bp-slate);          border-color: var(--bp-silver); background: var(--color-surface-2); }
+.rel-badge--finch    { color: #8a7415;                  border-color: var(--bp-finch); }
+.rel-badge--dusty    { color: var(--bp-dusty-purple);   border-color: var(--bp-dusty-purple); }
+.rel-badge--pink     { color: var(--bp-hot-pink);       border-color: var(--bp-hot-pink); }
+.rel-badge--slate    { color: var(--bp-slate);          border-color: var(--bp-slate); }
+.rel-badge--lavender { color: #7a6a96;                  border-color: var(--bp-soft-lavender); }
+
+[data-theme="dark"] .rel-badge--finch    { color: var(--bp-finch); }
+[data-theme="dark"] .rel-badge--lavender { color: var(--bp-soft-lavender); }
+[data-theme="dark"] .rel-badge--stone    { background: transparent; }
+
+/* ---- counts & group headings ---- */
+
+.rel-counts { font-style: italic; }
+
+.rel-group-heading {
+  margin: var(--space-4) 0 var(--space-2);
+}
+
+/* ---- relationship cards ---- */
+
+.rel-card-list {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.rel-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-1) var(--space-3);
+  align-items: baseline;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: border-color var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
+}
+
+a.rel-card:hover {
+  border-color: var(--color-accent-quiet);
+  box-shadow: var(--shadow-1);
+}
+
+a.rel-card:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.rel-card__title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+.rel-card__meta {
+  grid-row: 2;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.rel-card__badges {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-self: end;
+}
+
+.rel-card__notes {
+  grid-column: 1 / -1;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* ---- the modal ---- */
+
+.rel-modal {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-2);
+  padding: var(--space-6);
+  width: min(480px, calc(100vw - 2 * var(--space-4)));
+}
+
+.rel-modal::backdrop {
+  background: rgba(20, 17, 20, 0.45);
+}
+
+.rel-modal__title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  letter-spacing: 0.04em;
+  color: var(--color-heading);
+  margin: 0 0 var(--space-1);
+}
+
+.rel-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.rel-modal__label {
+  font-size: var(--text-sm);
+  font-style: italic;
+  color: var(--color-text-muted);
+  margin-top: var(--space-3);
+}
+
+.rel-modal__notes { resize: vertical; font-family: var(--font-body); }
+
+.rel-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+/* ---- the graph: calm, organic, charcoal ---- */
+
+.rel-graph__body { margin-top: var(--space-4); }
+
+.rel-graph__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.rel-graph__line {
+  stroke: var(--bp-ink);
+  stroke-width: 1;
+  opacity: 0.35;
+}
+
+[data-theme="dark"] .rel-graph__line { stroke: var(--bp-silver); }
+
+.rel-graph__edge-label {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 10px;
+  fill: var(--color-text-muted);
+}
+
+.rel-graph__node text {
+  font-family: var(--font-body);
+  font-size: 12px;
+  fill: var(--color-text);
+}
+
+.rel-graph__node--center circle {
+  fill: var(--color-heading);
+}
+
+.rel-graph__node--center text {
+  font-weight: 700;
+  fill: var(--color-heading);
+}
+
+.rel-graph__node[role="link"] { cursor: pointer; }
+
+.rel-graph__node[role="link"]:hover text {
+  fill: var(--color-accent-quiet);
+}
+
+.rel-graph__node:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.rel-graph__alt { margin-top: var(--space-4); }
+
+/* ---- sidebar: recent connections ---- */
+
+.sidebar__connections {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid rgba(198, 194, 204, 0.18);
+}
+
+.sidebar__connections-eyebrow {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-sidebar-muted);
+  margin: 0 0 var(--space-2);
+}
+
+.sidebar__connection {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--color-sidebar-muted);
+  text-decoration: none;
+  padding: var(--space-1) 0;
+  line-height: 1.5;
+}
+
+.sidebar__connection span { color: var(--color-sidebar-text); }
+
+.sidebar__connection em {
+  font-style: italic;
+  color: var(--color-sidebar-muted);
+}
+
+.sidebar__connection:hover span { color: var(--bp-hot-pink); }
+
+.sidebar__connection:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---- search overlay: related results ---- */
+
+.search-overlay__related {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+/* ---- print: relationships read as a quiet list ---- */
+
+@media print {
+  .rel-graph, .rel-modal { display: none !important; }
+}

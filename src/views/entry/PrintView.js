@@ -1,27 +1,51 @@
 // Black Poppy Canon — PrintView
-// An entry prints like a page from a well-loved journal:
-// book title and entry title above, version and the Canon's mark below,
-// no browser chrome, generous margins. The footer repeats on every page.
+// The entry as a journal page: no chrome, ink on paper,
+// the 11:11 mark in the footer. Hidden on screen; the only
+// thing visible in print while an entry is open.
 
-export function attachPrintChrome(container, { bookTitle, entryTitle, version }) {
-  const head = document.createElement('div');
-  head.className = 'print-chrome print-chrome--head';
-  head.setAttribute('aria-hidden', 'true');
-  head.innerHTML = `<span></span><span></span>`;
-  head.children[0].textContent = bookTitle || 'The Black Poppy Canon';
-  head.children[1].textContent = entryTitle || '';
+import { renderMarkdown } from '../../services/markdown.js';
 
-  const foot = document.createElement('div');
-  foot.className = 'print-chrome print-chrome--foot';
-  foot.setAttribute('aria-hidden', 'true');
-  foot.innerHTML = `<span></span><span>11:11</span><span></span>`;
-  foot.children[0].textContent = `Black Poppy Canon · v${version || 1}`;
-  foot.children[2].textContent = new Date().toLocaleDateString();
+const dateFmt = (iso) =>
+  iso ? new Date(iso).toLocaleDateString(undefined, { dateStyle: 'long' }) : '';
 
-  container.prepend(head);
-  container.appendChild(foot);
-}
+export function PrintView() {
+  const el = document.createElement('div');
+  el.className = 'entry-print';
+  el.setAttribute('aria-hidden', 'true');
 
-export function printPage() {
-  window.print();
+  return {
+    el,
+    update(entry, bookTitle) {
+      el.innerHTML = '';
+
+      const header = document.createElement('header');
+      header.className = 'entry-print__header';
+      const book = document.createElement('p');
+      book.className = 'entry-print__book';
+      book.textContent = `${bookTitle || 'The Canon'} · Black Poppy Canon`;
+      const title = document.createElement('h1');
+      title.className = 'entry-print__title';
+      title.textContent = entry.title;
+      const meta = document.createElement('p');
+      meta.className = 'entry-print__meta';
+      meta.textContent = [
+        entry.id,
+        `v${entry.version}`,
+        entry.status,
+        entry.author,
+        dateFmt(entry.updated),
+      ].filter(Boolean).join(' · ');
+      header.append(book, title, meta);
+
+      const body = document.createElement('div');
+      body.className = 'prose entry-print__body';
+      body.innerHTML = renderMarkdown(entry.body);
+
+      const footer = document.createElement('footer');
+      footer.className = 'entry-print__footer';
+      footer.textContent = 'Noli illegitimi carborundum · 11:11';
+
+      el.append(header, body, footer);
+    },
+  };
 }

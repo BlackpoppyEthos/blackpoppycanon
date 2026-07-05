@@ -23,6 +23,7 @@
   --bp-sage:            #4D8B5E;
   --bp-finch:           #F3CF39;
   --bp-dusty-purple:    #8B7A9E;
+  --bp-soft-lavender:   #C7B9DE;
 
   /* ---- Semantic tokens (light default) ---- */
   --color-bg:           var(--bp-full-moon);

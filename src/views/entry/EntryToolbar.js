@@ -1,58 +1,36 @@
 // Black Poppy Canon — EntryToolbar
-// Bold, italic, heading, quote, checklist, table, image, SVG,
-// divider, link, code, print. Each button speaks markdown.
+// Writing tools. Each button folds Markdown into the editor at the cursor.
 
-const ACTIONS = [
-  { id: 'bold',      label: 'B',  title: 'Bold',        wrap: ['**', '**'] },
-  { id: 'italic',    label: 'I',  title: 'Italic',      wrap: ['*', '*'] },
-  { id: 'heading',   label: 'H',  title: 'Heading',     prefix: '## ' },
-  { id: 'quote',     label: '"',  title: 'Quote',       prefix: '> ' },
-  { id: 'checklist', label: '☑',  title: 'Checklist',   prefix: '- [ ] ' },
-  { id: 'table',     label: '▦',  title: 'Table',       block: '| Column | Column |\n| --- | --- |\n| cell | cell |' },
-  { id: 'image',     label: '🖼', title: 'Image',       block: '![alt text](image-url)' },
-  { id: 'svg',       label: '◈',  title: 'SVG',         block: '![symbol](./icon.svg)' },
-  { id: 'divider',   label: '—',  title: 'Divider',     block: '\n---\n' },
-  { id: 'link',      label: '⌁',  title: 'Link',        wrap: ['[', '](url)'] },
-  { id: 'code',      label: '{}', title: 'Code block',  block: '```\ncode\n```' },
+const TOOLS = [
+  { id: 'bold',     label: 'B',  title: 'Bold',        insert: ['**', '**', 'bold'] },
+  { id: 'italic',   label: 'I',  title: 'Italic',      insert: ['*', '*', 'italic'] },
+  { id: 'heading',  label: 'H',  title: 'Heading',     insert: ['\n## ', '', 'Heading'] },
+  { id: 'quote',    label: '”',  title: 'Quote',       insert: ['\n> ', '', 'A quotation'] },
+  { id: 'check',    label: '☑',  title: 'Checklist',   insert: ['\n- [ ] ', '', 'A task'] },
+  { id: 'table',    label: '▦',  title: 'Table',
+    insert: ['\n| Column | Column |\n| --- | --- |\n| ', ' |  |', 'cell'] },
+  { id: 'image',    label: '🖼', title: 'Image',       insert: ['![', '](./assets/image.png)', 'alt text'] },
+  { id: 'svg',      label: '✦',  title: 'SVG',         insert: ['![', '](./assets/symbol.svg)', 'symbol'] },
+  { id: 'divider',  label: '—',  title: 'Divider',     insert: ['\n\n---\n\n', '', ''] },
+  { id: 'link',     label: '🔗', title: 'Link',        insert: ['[', '](https://)', 'link text'] },
+  { id: 'code',     label: '</>', title: 'Code block', insert: ['\n```\n', '\n```\n', 'code'] },
 ];
 
-export function EntryToolbar(textarea, { onInput, onPrint }) {
+export function EntryToolbar({ editor, onRelationship, onPrint }) {
   const el = document.createElement('div');
-  el.className = 'entry-toolbar no-print';
+  el.className = 'entry-toolbar';
   el.setAttribute('role', 'toolbar');
-  el.setAttribute('aria-label', 'Formatting');
+  el.setAttribute('aria-label', 'Writing tools');
 
-  function apply(action) {
-    const { selectionStart: s, selectionEnd: e, value } = textarea;
-    const selected = value.slice(s, e);
-    let insert;
-    let cursor;
-
-    if (action.wrap) {
-      insert = action.wrap[0] + (selected || 'text') + action.wrap[1];
-      cursor = s + insert.length;
-    } else if (action.prefix) {
-      insert = '\n' + action.prefix + (selected || '');
-      cursor = s + insert.length;
-    } else {
-      insert = '\n' + action.block + '\n';
-      cursor = s + insert.length;
-    }
-
-    textarea.value = value.slice(0, s) + insert + value.slice(e);
-    textarea.focus();
-    textarea.setSelectionRange(cursor, cursor);
-    onInput();
-  }
-
-  ACTIONS.forEach((a) => {
+  TOOLS.forEach((tool) => {
     const btn = document.createElement('button');
-    btn.className = 'entry-toolbar__btn';
     btn.type = 'button';
-    btn.title = a.title;
-    btn.setAttribute('aria-label', a.title);
-    btn.textContent = a.label;
-    btn.addEventListener('click', () => apply(a));
+    btn.className = 'entry-tool';
+    btn.dataset.tool = tool.id;
+    btn.title = tool.title;
+    btn.setAttribute('aria-label', tool.title);
+    btn.textContent = tool.label;
+    btn.addEventListener('click', () => editor.insert(...tool.insert));
     el.appendChild(btn);
   });
 
@@ -60,11 +38,20 @@ export function EntryToolbar(textarea, { onInput, onPrint }) {
   spacer.className = 'entry-toolbar__spacer';
   el.appendChild(spacer);
 
+  const rel = document.createElement('button');
+  rel.type = 'button';
+  rel.className = 'entry-tool';
+  rel.title = 'Add relationship';
+  rel.setAttribute('aria-label', 'Add relationship');
+  rel.textContent = '⇄';
+  rel.addEventListener('click', onRelationship);
+  el.appendChild(rel);
+
   const print = document.createElement('button');
-  print.className = 'entry-toolbar__btn';
   print.type = 'button';
+  print.className = 'entry-tool';
   print.title = 'Print (Ctrl+P)';
-  print.setAttribute('aria-label', 'Print');
+  print.setAttribute('aria-label', 'Print entry');
   print.textContent = '⎙';
   print.addEventListener('click', onPrint);
   el.appendChild(print);

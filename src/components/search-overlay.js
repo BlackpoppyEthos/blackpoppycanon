@@ -3,7 +3,8 @@
 // Until the data layer arrives, it answers honestly.
 
 import { icons } from './icons.js';
-import { getBooks, getEntries } from '../services/canon-data.js';
+import { getState } from '../state.js';
+import { neighbors } from '../services/RelationshipService.js';
 
 export function initSearch(root) {
   // Floating button
@@ -36,43 +37,72 @@ export function initSearch(root) {
   let lastFocus = null;
 
   async function renderResults(query) {
-    const [books, entries] = await Promise.all([getBooks(), getEntries()]);
+    const { entries, books = [] } = getState();
     results.innerHTML = '';
 
-    const pool = [
-      ...books.map((b) => ({ label: b.title, meta: 'Book', href: `#/book/${encodeURIComponent(b.id)}` })),
-      ...entries.map((e) => ({ label: e.title, meta: 'Entry', href: `#/entry/${encodeURIComponent(e.id)}` })),
-    ];
-
-    if (!pool.length) {
+    if (!entries.length) {
       results.innerHTML =
-        '<p class="panel__empty">The Canon has nothing to search yet.</p>';
+        '<p class="panel__empty">The Canon has no entries to search yet. When the data layer arrives, everything will be findable from here.</p>';
       return;
     }
 
     const q = query.trim().toLowerCase();
-    const matches = q ? pool.filter((i) => i.label.toLowerCase().includes(q)) : pool.slice(0, 8);
+    const matches = q
+      ? entries.filter((e) => (e.title + ' ' + (e.book || '')).toLowerCase().includes(q))
+      : entries.slice(0, 8);
 
     if (!matches.length) {
-      results.innerHTML = '<p class="panel__empty">No matches in the Canon. Try another word.</p>';
+      results.innerHTML = '<p class="panel__empty">No entries match. Try another word.</p>';
       return;
     }
 
-    const ul = document.createElement('ul');
-    ul.className = 'panel__list';
-    matches.slice(0, 10).forEach((item) => {
+    const item = (label, href, meta) => {
       const li = document.createElement('li');
       const a = document.createElement('a');
-      a.href = item.href;
-      a.textContent = item.label;
+      a.href = href;
+      a.textContent = label;
       a.addEventListener('click', close);
-      const m = document.createElement('span');
-      m.className = 'panel__meta';
-      m.textContent = item.meta;
-      li.append(a, m);
-      ul.appendChild(li);
-    });
+      li.appendChild(a);
+      if (meta) {
+        const m = document.createElement('span');
+        m.className = 'panel__meta';
+        m.textContent = meta;
+        li.appendChild(m);
+      }
+      return li;
+    };
+
+    const ul = document.createElement('ul');
+    ul.className = 'panel__list';
+    matches.slice(0, 10).forEach((e) => ul.appendChild(item(e.title, e.href || '#/library')));
     results.appendChild(ul);
+
+    // Relationships widen the answer: one degree out from the top matches.
+    if (q) {
+      const matchedIds = new Set(matches.map((e) => e.id));
+      const related = new Map();
+      for (const match of matches.slice(0, 3)) {
+        for (const link of await neighbors(match.id)) {
+          if (matchedIds.has(link.id) || related.has(link.id)) continue;
+          const entry = entries.find((e) => e.id === link.id);
+          const book = books.find((b) => b.id === link.id);
+          if (entry) related.set(link.id, { label: entry.title, href: entry.href, meta: `${link.rel.type} · ${match.title}` });
+          else if (book) related.set(link.id, { label: book.title, href: '#/library', meta: `${link.rel.type} · ${match.title}` });
+        }
+      }
+      // The query may have changed while we looked — stay honest.
+      if (input.value.trim().toLowerCase() !== q || !related.size) return;
+
+      const heading = document.createElement('p');
+      heading.className = 'search-overlay__related';
+      heading.textContent = 'Related';
+      results.appendChild(heading);
+
+      const rul = document.createElement('ul');
+      rul.className = 'panel__list';
+      [...related.values()].slice(0, 6).forEach((r) => rul.appendChild(item(r.label, r.href, r.meta)));
+      results.appendChild(rul);
+    }
   }
 
   function open() {

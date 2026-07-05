@@ -1,6 +1,6 @@
 // Black Poppy Canon — companions service
+// The living (and remembered) companions of the Black Poppy Universe.
 // Stories here are true or absent — never invented.
-// Canon identities: Buffalo is Trent. Yellow Finch is Turtle.
 
 export const companions = [
   {
@@ -34,20 +34,20 @@ export const companions = [
   {
     id: 'buffalo',
     name: 'Buffalo',
-    kind: 'Trent, by another name',
-    note: 'Buffalo is Trent. The rest of this telling is still to come.',
+    kind: 'Companion',
+    note: 'Story not yet written. Every companion earns a true telling.',
     symbol: 'star',
   },
   {
     id: 'finch',
-    name: 'Yellow Finch',
-    kind: 'Turtle, by another name',
-    note: 'The Yellow Finch is Turtle — and the color that carries the name is now Canon: #F3CF39.',
+    name: 'Finch',
+    kind: 'Companion',
+    note: 'Story not yet written — but a color already carries the name.',
     symbol: 'star',
   },
 ];
 
-// Spotlight: Alice first, then rotate daily.
+// Spotlight: Alice first (per spec), then rotate daily.
 export function spotlightCompanion() {
   const daysSinceEpoch = Math.floor(Date.now() / 86400000);
   const alice = companions.findIndex((c) => c.id === 'alice');

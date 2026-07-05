@@ -343,6 +343,10 @@
 .search-fab:hover { transform: scale(1.06); }
 .search-fab svg { width: 20px; height: 20px; }
 
+/* The hidden attribute must always win — display:flex below
+   would otherwise leave an invisible wall over the whole app. */
+.search-overlay[hidden] { display: none; }
+
 .search-overlay {
   position: fixed;
   inset: 0;
@@ -391,40 +395,4 @@
 
 @media print {
   .search-fab, .search-overlay { display: none !important; }
-}
-
-/* ============================================================
-   SPRINT 4.3 — LIBRARY, BOOKS, ENTRIES
-   ============================================================ */
-
-.book-card {
-  position: relative;
-  padding-left: calc(var(--space-5) + 10px);
-  overflow: hidden;
-}
-
-.book-card__spine {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 10px;
-  background: linear-gradient(
-    to bottom,
-    var(--bp-finch),
-    var(--bp-dusty-purple)
-  );
-}
-
-.crumb {
-  display: inline-block;
-  font-size: var(--text-sm);
-  margin-bottom: var(--space-4);
-  color: var(--color-text-muted);
-  text-decoration: none;
-}
-
-.crumb:hover { color: var(--color-accent); }
-
-.entry-body {
-  margin-top: var(--space-4);
-  white-space: pre-wrap;
 }

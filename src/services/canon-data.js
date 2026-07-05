@@ -1,18 +1,25 @@
-// Black Poppy Canon — data adapter (Sprint 4.4: the Entry System)
-// The Entry is the atomic unit of the Black Poppy Operating System.
-// MOCK MODE: approved Books from JSON; Entries written in-app persist
-// on this device through this interface. Sprint 6 swaps the internals
-// for the specialized Sheets backend; the contract below is stable.
+// Black Poppy Canon — canon-data adapter (AD-006)
+// THE data contract. All Canon data flows through here — views never
+// touch JSON files or storage keys directly. Mock mode until Sprint 6,
+// when the internals swap to the Google Sheets backend. The surface
+// of this module must not change when that happens.
 //
-// Canon rules honored here:
-//   • Do not invent Canon — entries are written, never generated.
-//   • Nothing is deleted — entries archive; every save is a version.
+// The Entry is the atomic unit of the entire system:
+//   { id, bookId, type, title, tags, status, body, author,
+//     version, created, updated, relationships[], versions[] }
+//
+// Nothing is deleted. Entries archive; every explicit save creates
+// a version.
 
-import { storage } from './storage.js';
+import { createRelationship } from './RelationshipService.js';
+import { root } from '../root/RootSystem.js';
+import { mintId } from '../root/ids.js';
 
-const LOCAL_ENTRIES_KEY = 'bpc-local-entries';
-const AUTHOR = 'Rachael Nike';
-const cache = new Map();
+// This module is the AD-006 adapter and the Canon's public face over
+// the Root System (APP-007): views call these functions; internally
+// every read and write flows View → Service → Repository → Storage.
+// The Entry shape below is the locked Sprint 6 migration contract and
+// must never change.
 
 export const ENTRY_TYPES = [
   'Canon Entry', 'Journal', 'Dream', 'Looking Glass', 'Atelier',
@@ -22,157 +29,123 @@ export const ENTRY_TYPES = [
 
 export const ENTRY_STATUSES = ['looking-glass', 'atelier', 'canon', 'archived'];
 
-async function load(name) {
-  if (cache.has(name)) return cache.get(name);
-  try {
-    const res = await fetch(`./src/data/${name}.json`);
-    if (!res.ok) throw new Error(`${name}: ${res.status}`);
-    const data = await res.json();
-    cache.set(name, data);
-    return data;
-  } catch (err) {
-    console.error('[canon-data]', err);
-    cache.set(name, []);
-    return [];
-  }
+export const RELATIONSHIP_TYPES = [
+  'book', 'project', 'symbol', 'visual', 'companion', 'product', 'entry',
+];
+
+const nowISO = () => new Date().toISOString();
+
+// Every write of an entry goes through the entry repository; the
+// repository emits the change so the shell re-hydrates.
+function persistEntry(entry) {
+  return root.repo('entry').put(entry);
 }
 
-function localEntries() {
-  return storage.get(LOCAL_ENTRIES_KEY, []);
-}
+/* ---------- books ---------- */
 
-function persist(entries) {
-  storage.set(LOCAL_ENTRIES_KEY, entries);
-}
-
-export const DATA_MODE = 'mock';
-
-/* ---------- Books ---------- */
-
-export async function getBooks() {
-  return structuredClone(await load('books'));
+export async function listBooks() {
+  return root.repo('book').all();
 }
 
 export async function getBook(id) {
-  const books = await load('books');
-  return structuredClone(books.find((b) => b.id === id) || null);
+  return root.repo('book').get(id);
 }
 
-/* ---------- Entries ---------- */
+/* ---------- symbols (the Symbolarium) ---------- */
 
-export async function getEntries(bookId) {
-  const json = await load('entries');
-  const merged = [...localEntries(), ...json];
-  return structuredClone(
-    bookId ? merged.filter((e) => e.bookId === bookId) : merged
-  );
+export async function listSymbols() {
+  return root.repo('symbol').all();
+}
+
+export async function getSymbol(id) {
+  return root.repo('symbol').get(id);
+}
+
+/* ---------- entries ---------- */
+
+export async function listEntries() {
+  const entries = await root.repo('entry').all();
+  return entries.sort((a, b) => new Date(b.updated) - new Date(a.updated));
 }
 
 export async function getEntry(id) {
-  const entries = await getEntries();
-  return entries.find((e) => e.id === id) || null;
+  return root.repo('entry').get(id);
 }
 
-export function isLocalEntry(id) {
-  return localEntries().some((e) => e.id === id);
-}
-
-// Explicit save: creates a version. Nothing is deleted.
-export function saveEntry({ id, bookId, type, title, tags = [], status, body, summary }) {
-  const entries = localEntries();
-  const now = new Date().toISOString();
-
-  if (id) {
-    const i = entries.findIndex((e) => e.id === id);
-    if (i === -1) return null;
-    const prev = entries[i];
-    const version = (prev.version || 1) + 1;
-    entries[i] = {
-      ...prev,
-      bookId, type, title, tags, body,
-      status: status || prev.status,
-      version,
-      updated: now,
-      versions: [
-        ...(prev.versions || []),
-        { version, timestamp: now, summary: summary || 'Revised', author: AUTHOR, body },
-      ],
-    };
-    persist(entries);
-    return structuredClone(entries[i]);
-  }
-
+export async function createEntry(partial = {}) {
+  const stamp = nowISO();
   const entry = {
-    id: `ENTRY-${Date.now().toString(36).toUpperCase()}`,
-    bookId,
-    type: type || 'Canon Entry',
-    title,
-    tags,
-    status: status || 'looking-glass',
-    body,
-    author: AUTHOR,
+    id: mintId('entry'), // permanent constitutional id: ENTRY-000001
+    bookId: partial.bookId || 'BOOK-003',
+    type: partial.type || 'Canon Entry',
+    title: partial.title || 'Untitled Entry',
+    tags: partial.tags || [],
+    status: partial.status || 'atelier',
+    body: partial.body || '',
+    author: partial.author || 'Rachael Nike',
     version: 1,
-    created: now,
-    updated: now,
-    relationships: [],
+    created: stamp,
+    updated: stamp,
+    relationships: partial.relationships || [],
     versions: [
-      { version: 1, timestamp: now, summary: summary || 'First writing', author: AUTHOR, body },
+      { version: 1, timestamp: stamp, summary: 'Entry begun.', author: partial.author || 'Rachael Nike' },
     ],
-    source: 'local',
   };
-  entries.unshift(entry);
-  persist(entries);
-  return structuredClone(entry);
+  await persistEntry(entry);
+  // Canon rule: an Entry cannot exist without a parent Book.
+  // The Belongs To thread is drawn automatically — never wired by hand.
+  await createRelationship({
+    source: entry.id,
+    target: entry.bookId,
+    type: 'Belongs To',
+    author: entry.author,
+  });
+  return entry;
+}
+
+// Explicit save — creates a version. Nothing is deleted.
+export async function saveEntry(entry, summary = '') {
+  const stamp = nowISO();
+  const next = {
+    ...entry,
+    version: (entry.version || 0) + 1,
+    updated: stamp,
+    versions: [
+      ...(entry.versions || []),
+      {
+        version: (entry.version || 0) + 1,
+        timestamp: stamp,
+        summary: summary || 'Saved.',
+        author: entry.author,
+        body: entry.body,
+      },
+    ],
+  };
+  return persistEntry(next);
+}
+
+// Autosave — keeps the draft safe without minting a version.
+export async function autosaveEntry(entry) {
+  return persistEntry({ ...entry, updated: nowISO() });
 }
 
 // Archive, never delete.
-export function archiveEntry(id) {
-  const entries = localEntries();
-  const i = entries.findIndex((e) => e.id === id);
-  if (i === -1) return false;
-  entries[i].status = 'archived';
-  entries[i].updated = new Date().toISOString();
-  persist(entries);
-  return true;
+export async function archiveEntry(entry) {
+  return saveEntry({ ...entry, status: 'archived' }, 'Archived.');
 }
 
-/* ---------- Relationships ---------- */
+/* ---------- relationships ---------- */
 
-export function setRelationships(id, relationships) {
-  const entries = localEntries();
-  const i = entries.findIndex((e) => e.id === id);
-  if (i === -1) return false;
-  entries[i].relationships = relationships;
-  persist(entries);
-  return true;
-}
-
-export async function getRelationshipsData() {
-  return structuredClone(await load('relationships'));
-}
-
-/* ---------- Drafts (autosave — silent, crash-safe) ---------- */
-
-export function saveDraft(key, draft) {
-  storage.set(`bpc-draft-${key}`, { ...draft, savedAt: new Date().toISOString() });
-}
-
-export function getDraft(key) {
-  return storage.get(`bpc-draft-${key}`, null);
-}
-
-export function clearDraft(key) {
-  storage.remove(`bpc-draft-${key}`);
-}
-
-/* ---------- Other collections ---------- */
-
-export async function getProjects() { return structuredClone(await load('projects')); }
-export async function getSymbols() { return structuredClone(await load('symbols')); }
-export async function getCompanions() { return structuredClone(await load('companions')); }
-
-export async function getCounts() {
-  const books = await load('books');
-  const entries = await getEntries();
-  return { books: books.length, entries: entries.length };
+export async function listRelationships(entryId) {
+  const seeded = await root.repo('relationship').all();
+  const entry = await getEntry(entryId);
+  const own = (entry?.relationships || []).map((r) => ({ from: entryId, to: r.targetId, type: r.type, label: r.label || '' }));
+  const external = seeded.filter((r) => r.from === entryId || r.to === entryId);
+  const seen = new Set();
+  return [...own, ...external].filter((r) => {
+    const key = `${r.from}→${r.to}·${r.type}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }

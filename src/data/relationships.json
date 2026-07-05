@@ -1,1 +1,35 @@
-[]
+[
+  {
+    "id": "REL-000001",
+    "source": "ENT-001",
+    "target": "BOOK-007",
+    "type": "Belongs To",
+    "created": "2026-07-03",
+    "author": "Zorya",
+    "notes": "",
+    "version": 1,
+    "status": "canon"
+  },
+  {
+    "id": "REL-000002",
+    "source": "ENT-002",
+    "target": "BOOK-007",
+    "type": "Belongs To",
+    "created": "2026-07-03",
+    "author": "Zorya",
+    "notes": "",
+    "version": 1,
+    "status": "canon"
+  },
+  {
+    "id": "REL-000003",
+    "source": "ENT-001",
+    "target": "ENT-002",
+    "type": "References",
+    "created": "2026-07-03",
+    "author": "Zorya",
+    "notes": "The sprint record points to the guide it shipped.",
+    "version": 1,
+    "status": "canon"
+  }
+]

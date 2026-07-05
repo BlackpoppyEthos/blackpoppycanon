@@ -1,14 +1,14 @@
 [
-  { "id": "BOOK-001", "title": "Constitution", "description": "Core values, creative principles, engineering principles, voice, and definitions.", "status": "looking-glass", "version": "0.1.0", "updated": "2026-07-02", "icon": "poppy" },
-  { "id": "BOOK-002", "title": "Cosmology", "description": "Looking Glass, Canon, Atelier, Nursery, the Triad, and the Living Companions — how the universe fits together.", "status": "looking-glass", "version": "0.1.0", "updated": "2026-07-02", "icon": "moon" },
-  { "id": "BOOK-003", "title": "Canon", "description": "The living collection of truths discovered through building.", "status": "looking-glass", "version": "0.1.0", "updated": "2026-07-02", "icon": "book" },
-  { "id": "BOOK-004", "title": "Visual Canon", "description": "The approved visual language — imagery, references, and illustration rules.", "status": "looking-glass", "version": "0.1.0", "updated": "2026-07-02", "icon": "star" },
-  { "id": "BOOK-005", "title": "Symbolarium", "description": "The symbols and what each one means. Symbols are a language, not decoration.", "status": "looking-glass", "version": "0.1.0", "updated": "2026-07-02", "icon": "star" },
-  { "id": "BOOK-006", "title": "Living Companions", "description": "The pack — true stories of the companions, told properly or not at all.", "status": "looking-glass", "version": "0.1.0", "updated": "2026-07-02", "icon": "paw" },
-  { "id": "BOOK-007", "title": "Engineering", "description": "Technical architecture, standards, and specifications of the Canon itself.", "status": "looking-glass", "version": "0.1.0", "updated": "2026-07-02", "icon": "atelier" },
-  { "id": "BOOK-008", "title": "Design System", "description": "Color tokens, typography, spacing, accessibility, and print.", "status": "looking-glass", "version": "0.1.0", "updated": "2026-07-02", "icon": "star" },
-  { "id": "BOOK-009", "title": "Chronicles", "description": "The record of what happened, and when.", "status": "looking-glass", "version": "0.1.0", "updated": "2026-07-02", "icon": "book" },
-  { "id": "BOOK-010", "title": "Looking Glass", "description": "Experiments and ideas not yet Canon.", "status": "looking-glass", "version": "0.1.0", "updated": "2026-07-02", "icon": "search" },
-  { "id": "BOOK-011", "title": "Atelier", "description": "Works in progress — the making place.", "status": "looking-glass", "version": "0.1.0", "updated": "2026-07-02", "icon": "atelier" },
-  { "id": "BOOK-012", "title": "Root System", "description": "Books, entries, assets, relationships, and version control — the structure beneath everything.", "status": "looking-glass", "version": "0.1.0", "updated": "2026-07-02", "icon": "poppy" }
+  { "id": "BOOK-001", "title": "Constitution",       "note": "" },
+  { "id": "BOOK-002", "title": "Cosmology",          "note": "" },
+  { "id": "BOOK-003", "title": "Canon",              "note": "" },
+  { "id": "BOOK-004", "title": "Visual Canon",       "note": "" },
+  { "id": "BOOK-005", "title": "Symbolarium",        "note": "" },
+  { "id": "BOOK-006", "title": "Living Companions",  "note": "" },
+  { "id": "BOOK-007", "title": "Engineering",        "note": "" },
+  { "id": "BOOK-008", "title": "Design System",      "note": "" },
+  { "id": "BOOK-009", "title": "Chronicles",         "note": "" },
+  { "id": "BOOK-010", "title": "Looking Glass",      "note": "" },
+  { "id": "BOOK-011", "title": "Atelier",            "note": "" },
+  { "id": "BOOK-012", "title": "Root System",        "note": "" }
 ]

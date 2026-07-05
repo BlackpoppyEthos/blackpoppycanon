@@ -1,12 +1,11 @@
 # Black Poppy Canon
 
-**Version 0.4.0 — The First Bloom**
+**Version 0.7.0 — The First Bloom · Sprint 4.7: The Root System**
 Author: Rachael Nike
 
 The living Canon of the Black Poppy Universe — a collection of principles, symbols, systems, and stories uncovered through creating.
 
-Live: https://blackpoppyethos.github.io/blackpoppycanon/
-Galaxy: Ethos
+Live: https://rachaelnike-queen.github.io/blackpoppycanon/
 
 ---
 
@@ -31,10 +30,19 @@ A vanilla JavaScript Progressive Web App. Single-page application, native ES mod
   .nojekyll             Tells GitHub Pages not to run Jekyll
   /src
     main.js  app.js  router.js  state.js  theme.js
-    /components   sidebar, header, card, icons
+    /components   sidebar, header, card, icons, dashboard-cards, search-overlay
     /views        dashboard, library, atelier, search, settings, notfound
-    /services     storage
-    /styles       variables (design tokens), typography, layout, components, print
+      /entry      EntryView, EntryEditor, EntryPreview, EntryToolbar,
+                  EntryMetadata, VersionHistory, PrintView
+      /relationship  RelationshipPanel, RelationshipCard, RelationshipGraph,
+                     RelationshipModal, RelationshipBadge
+    /root         RootSystem (single source of truth), Repository, storage
+                  (swappable providers: Mock JSON now, Sheets/Supabase later),
+                  schema (universal object model), ids (permanent constitutional ids)
+    /services     canon-data (THE adapter), RelationshipService, WorktableService,
+                  markdown, companions, storage — all flow through /root
+    /data         books.json, entries.json, relationships.json, symbols.json (seed)
+    /styles       variables (design tokens), typography, layout, components, entry, print
 ```
 
 ## Deploying to GitHub Pages
@@ -43,23 +51,6 @@ A vanilla JavaScript Progressive Web App. Single-page application, native ES mod
 2. Repo → Settings → Pages → Source: **Deploy from a branch** → Branch: `main`, folder `/ (root)` → Save.
 3. Wait ~1 minute, then open https://rachaelnike-queen.github.io/blackpoppycanon/
 4. On your phone: open the URL → browser menu → **Add to Home Screen**. The Canon installs like an app and works offline.
-
-## The Entry System (Sprint 4.4)
-
-Entries are the atomic unit of the Canon (Architectural Decision 006).
-
-- **Write**: `#/write` or the "Write an entry in this Book" button. Markdown editor with
-  live preview, toolbar, word count, reading time. Split view on desktop, toggle on mobile.
-- **Autosave vs. versions**: drafts are kept silently every 10 seconds (crash-safe);
-  Ctrl+S / the Save button commits a **version** with an optional summary. Nothing is deleted —
-  entries archive, and every version is preserved.
-- **Read**: title, metadata, rendered body, relationships, timeline, version history.
-- **Print**: Ctrl+P or the Print button. The entry prints as a journal page — book title and
-  entry title above, version, date, and 11:11 in a repeating footer, no browser chrome.
-- **Relationships**: connect entries to Books, other Entries, Symbols, Projects, Companions,
-  Products, Components. Book/Entry connections are live links.
-- Entries persist on this device (localStorage) until the Sprint 6 backend; they flow through
-  the same adapter interface the backend will implement.
 
 To update: change files, commit, push. Pages redeploys automatically.
 

@@ -1,11 +1,15 @@
 // Black Poppy Canon — sidebar component
 import { routes } from '../router.js';
 import { icon } from './icons.js';
+import { recentRelationships } from '../services/RelationshipService.js';
+import { getState, subscribe } from '../state.js';
 
 const NAV_ICONS = {
   '/': 'poppy',
   '/library': 'book',
+  '/symbolarium': 'star',
   '/atelier': 'atelier',
+  '/looking-glass': 'moon',
   '/search': 'search',
   '/settings': 'settings',
 };
@@ -34,7 +38,7 @@ export function Sidebar() {
 
   const bloom = document.createElement('p');
   bloom.className = 'sidebar__bloom';
-  bloom.textContent = 'v0.1.0 · The First Bloom';
+  bloom.textContent = 'v0.7.0 · The First Bloom';
 
   // Nav
   const nav = document.createElement('nav');
@@ -55,7 +59,48 @@ export function Sidebar() {
   footer.className = 'sidebar__footer';
   footer.textContent = 'Noli illegitimi carborundum · 11:11';
 
-  el.append(brand, bloom, nav, footer);
+  // Recent Connections — the newest threads in the root system (APP-005).
+  const connections = document.createElement('div');
+  connections.className = 'sidebar__connections';
+  connections.setAttribute('aria-label', 'Recent connections');
+
+  async function paintConnections() {
+    const rels = await recentRelationships(3);
+    const { entries = [], books = [] } = getState();
+    const name = (id, label) =>
+      entries.find((e) => e.id === id)?.title ||
+      books.find((b) => b.id === id)?.title || label || id;
+
+    connections.innerHTML = '';
+    if (!rels.length) return;
+
+    const eyebrow = document.createElement('p');
+    eyebrow.className = 'sidebar__connections-eyebrow';
+    eyebrow.textContent = 'Recent Connections';
+    connections.appendChild(eyebrow);
+
+    rels.forEach((rel) => {
+      const a = document.createElement('a');
+      a.className = 'sidebar__connection';
+      a.href = rel.source.startsWith('ENT') ? `#/entry/${rel.source}`
+        : rel.source.startsWith('BOOK') ? `#/book/${rel.source}` : '#/library';
+      a.innerHTML = '';
+      const from = document.createElement('span');
+      from.textContent = name(rel.source, rel.sourceLabel);
+      const kind = document.createElement('em');
+      kind.textContent = ` ${rel.type.toLowerCase()} `;
+      const to = document.createElement('span');
+      to.textContent = name(rel.target, rel.targetLabel);
+      a.append(from, kind, to);
+      connections.appendChild(a);
+    });
+  }
+
+  subscribe(paintConnections);
+  window.addEventListener('bpc:data-changed', paintConnections);
+  paintConnections();
+
+  el.append(brand, bloom, nav, connections, footer);
 
   return {
     el,

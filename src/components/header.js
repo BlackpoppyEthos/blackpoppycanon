@@ -1,12 +1,12 @@
 // Black Poppy Canon — top header component
-// Sprint 4.3: the theme toggle moved to Settings. Dark is a supported,
-// hidden feature; parchment is the experience.
 import { icons } from './icons.js';
+import { getTheme, toggleTheme } from '../theme.js';
 
 export function Header() {
   const el = document.createElement('header');
   el.className = 'header';
 
+  // Mobile menu button
   const menuButton = document.createElement('button');
   menuButton.className = 'icon-btn menu-toggle';
   menuButton.setAttribute('aria-label', 'Open menu');
@@ -21,7 +21,31 @@ export function Header() {
   left.className = 'header__actions';
   left.append(menuButton, title);
 
-  el.append(left);
+  // Theme toggle
+  const themeButton = document.createElement('button');
+  themeButton.className = 'icon-btn';
+  themeButton.setAttribute('aria-label', 'Switch to dark theme');
+
+  function paintThemeButton() {
+    const theme = getTheme();
+    themeButton.innerHTML = theme === 'light' ? icons.moon : icons.sun;
+    themeButton.setAttribute(
+      'aria-label',
+      theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'
+    );
+  }
+  paintThemeButton();
+
+  themeButton.addEventListener('click', () => {
+    toggleTheme();
+    paintThemeButton();
+  });
+
+  const actions = document.createElement('div');
+  actions.className = 'header__actions';
+  actions.append(themeButton);
+
+  el.append(left, actions);
 
   return {
     el,

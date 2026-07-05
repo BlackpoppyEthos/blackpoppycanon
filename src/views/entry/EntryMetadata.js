@@ -1,32 +1,73 @@
 // Black Poppy Canon — EntryMetadata
-// The facts of an entry: id, book, type, tags, status, version, dates, author.
+// The card catalog for a single entry. Read shows the record;
+// Write lets the record be corrected.
 
-import { STATUS_LABELS } from '../library/BookCard.js';
+import { ENTRY_TYPES, ENTRY_STATUSES } from '../../services/canon-data.js';
 
-export function EntryMetadata(entry, book) {
-  const el = document.createElement('aside');
-  el.className = 'entry-meta card';
-  el.setAttribute('aria-label', 'Entry metadata');
+const dateFmt = (iso) =>
+  iso ? new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '—';
 
-  const rows = [
-    ['Entry', entry.id],
-    ['Book', book ? book.title : entry.bookId],
-    ['Type', entry.type || 'Canon Entry'],
-    ['Tags', (entry.tags || []).join(', ') || '—'],
-    ['Status', STATUS_LABELS[entry.status] || entry.status],
-    ['Version', `v${entry.version || 1}`],
-    ['Created', new Date(entry.created || entry.date).toLocaleDateString()],
-    ['Updated', new Date(entry.updated).toLocaleDateString()],
-    ['Author', entry.author || 'Rachael Nike'],
-  ];
+export function EntryMetadata({ entry, books, relCount, onChange }) {
+  const el = document.createElement('details');
+  el.className = 'card entry-panel entry-panel--metadata';
+  el.open = false;
 
-  el.innerHTML =
-    '<span class="eyebrow">Metadata</span>' +
-    '<dl class="entry-meta__list">' +
-    rows.map(([k, v]) => `<div><dt>${k}</dt><dd></dd></div>`).join('') +
-    '</dl>';
+  const summary = document.createElement('summary');
+  summary.className = 'entry-panel__summary';
+  summary.textContent = 'Metadata';
+  el.appendChild(summary);
 
-  el.querySelectorAll('dd').forEach((dd, i) => (dd.textContent = rows[i][1]));
+  const dl = document.createElement('dl');
+  dl.className = 'entry-meta';
 
+  function row(term, node) {
+    const dt = document.createElement('dt');
+    dt.textContent = term;
+    const dd = document.createElement('dd');
+    if (typeof node === 'string') dd.textContent = node;
+    else dd.appendChild(node);
+    dl.append(dt, dd);
+  }
+
+  function select(options, value, label, apply) {
+    const s = document.createElement('select');
+    s.className = 'entry-input';
+    s.setAttribute('aria-label', label);
+    options.forEach((opt) => {
+      const o = document.createElement('option');
+      o.value = opt.value ?? opt;
+      o.textContent = opt.label ?? opt;
+      if (o.value === value) o.selected = true;
+      s.appendChild(o);
+    });
+    s.addEventListener('change', () => apply(s.value));
+    return s;
+  }
+
+  const bookOptions = books.map((b) => ({ value: b.id, label: b.title }));
+
+  row('Entry ID', entry.id);
+  row('Book', select(bookOptions, entry.bookId, 'Book', (v) => onChange({ bookId: v })));
+  row('Category', select(ENTRY_TYPES, entry.type, 'Category', (v) => onChange({ type: v })));
+
+  const tags = document.createElement('input');
+  tags.className = 'entry-input';
+  tags.type = 'text';
+  tags.value = (entry.tags || []).join(', ');
+  tags.placeholder = 'comma, separated, tags';
+  tags.setAttribute('aria-label', 'Tags');
+  tags.addEventListener('change', () =>
+    onChange({ tags: tags.value.split(',').map((t) => t.trim()).filter(Boolean) })
+  );
+  row('Tags', tags);
+
+  row('Status', select(ENTRY_STATUSES, entry.status, 'Status', (v) => onChange({ status: v })));
+  row('Version', `v${entry.version}`);
+  row('Created', dateFmt(entry.created));
+  row('Modified', dateFmt(entry.updated));
+  row('Author', entry.author || '—');
+  row('Relationships', String(relCount ?? (entry.relationships || []).length));
+
+  el.appendChild(dl);
   return el;
 }

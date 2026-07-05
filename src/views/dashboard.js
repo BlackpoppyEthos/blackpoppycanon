@@ -21,7 +21,6 @@ import {
   Footer,
 } from '../components/dashboard-cards.js';
 import { getState } from '../state.js';
-import { getEntries } from '../services/canon-data.js';
 
 export function DashboardView() {
   const view = document.createElement('div');
@@ -35,27 +34,12 @@ export function DashboardView() {
   grid.className = 'dash-grid';
 
   grid.appendChild(ContinueCard(state));
-  const bloomSlot = BloomCard(state);
-  grid.appendChild(bloomSlot);
+  grid.appendChild(BloomCard(state));
   grid.appendChild(AtelierCard(state));
   grid.appendChild(LookingGlassCard(state));
   grid.appendChild(ProjectsCard(state));
-  const recentSlot = RecentEntriesCard(state);
-  grid.appendChild(recentSlot);
+  grid.appendChild(RecentEntriesCard(state));
   grid.appendChild(CompanionCard());
-
-  // Entries are real now — refresh Bloom and Recent from the adapter.
-  getEntries().then((entries) => {
-    if (!entries.length) return;
-    const sorted = entries.slice().sort((a, b) => new Date(b.updated || b.date) - new Date(a.updated || a.date));
-    const blooms = sorted.slice(0, 5).map((e) => ({
-      title: e.title, kind: e.type || 'Entry', href: `#/entry/${encodeURIComponent(e.id)}`,
-    }));
-    bloomSlot.replaceWith(BloomCard({ blooms }));
-    recentSlot.replaceWith(RecentEntriesCard({
-      entries: sorted.map((e) => ({ title: e.title, book: e.bookId, date: e.updated || e.date, href: `#/entry/${encodeURIComponent(e.id)}` })),
-    }));
-  });
 
   view.appendChild(grid);
   view.appendChild(Footer(state));

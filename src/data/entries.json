@@ -1,1 +1,51 @@
-[]
+[
+  {
+    "id": "ENT-001",
+    "bookId": "BOOK-007",
+    "type": "Sprint",
+    "title": "Sprint 4.4 — The Canon Entry System",
+    "tags": ["sprint", "app-004", "entry-system"],
+    "status": "canon",
+    "author": "Rachael Nike · Zorya",
+    "version": 1,
+    "created": "2026-07-03T12:00:00Z",
+    "updated": "2026-07-03T12:00:00Z",
+    "body": "# APP-004 — Canon Entry Reader & Writer\n\n> Entries are not documents. Entries are living knowledge objects.\n> Everything inside the Canon eventually becomes an Entry.\n\n## Objective\n\nBuild the Canon Entry System. Entries are the fundamental building blocks of the Black Poppy Canon.\n\n- Books contain Entries.\n- Projects reference Entries.\n- Symbols connect Entries.\n- Everything begins here.\n\n## What shipped\n\n| Piece | Status |\n| --- | --- |\n| Entry reader & writer | ✓ |\n| Markdown editor + live preview | ✓ |\n| Metadata panel | ✓ |\n| Relationships (unlimited) | ✓ |\n| Version history — nothing is deleted | ✓ |\n| Autosave every 10 seconds | ✓ |\n| Print layout | ✓ |\n| In-entry search | ✓ |\n\n## Acceptance criteria\n\n- [x] Entry opens\n- [x] Metadata visible\n- [x] Markdown editor functional\n- [x] Live preview\n- [x] Responsive\n- [x] Autosave\n- [x] Print layout\n- [x] Relationship panel\n- [x] Mock data only\n\n## Definition of done\n\nThe Canon can now be written.",
+    "relationships": [
+      { "type": "book", "targetId": "BOOK-007", "label": "Engineering" },
+      { "type": "entry", "targetId": "ENT-002", "label": "How to write an Entry" }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-07-03T12:00:00Z",
+        "summary": "Entry created from the approved APP-004 specification.",
+        "author": "Zorya"
+      }
+    ]
+  },
+  {
+    "id": "ENT-002",
+    "bookId": "BOOK-007",
+    "type": "Reference",
+    "title": "How to write an Entry",
+    "tags": ["reference", "guide"],
+    "status": "canon",
+    "author": "Zorya",
+    "version": 1,
+    "created": "2026-07-03T12:00:00Z",
+    "updated": "2026-07-03T12:00:00Z",
+    "body": "# How to write an Entry\n\nThis page is alive. Press **Write** above and change it — the Canon will remember every version.\n\n## The essentials\n\n- **Write / Read** — switch between the editor and the finished page.\n- **Save** (`Ctrl+S`) — every explicit save creates a version. Add a one-line summary so future-you knows what changed.\n- **Autosave** — your draft is kept safe every ten seconds, quietly.\n- **Print** (`Ctrl+P`) — the entry prints like a journal page.\n- **Find** (`Ctrl+K`) — search inside this entry.\n\n## What the editor speaks\n\nMarkdown, plainly:\n\n```\n# Heading\n**bold** and *italic*\n> a quotation\n- a list\n- [ ] a task not yet done\n| tables | too |\n| --- | --- |\n```\n\n## Relationships\n\nEvery Entry may reach toward Books, Projects, Symbols, Companions, Products, and other Entries. Add them in the Relationships panel below the page. There is no limit — the Canon is a root system, not a filing cabinet.\n\n## Nothing is deleted\n\nEntries archive; they do not die. Every saved version stays in the Version History, and any old version can be restored — which simply writes a new version. The record only grows.\n\n---\n\n*Noli illegitimi carborundum.*",
+    "relationships": [
+      { "type": "book", "targetId": "BOOK-007", "label": "Engineering" }
+    ],
+    "versions": [
+      {
+        "version": 1,
+        "timestamp": "2026-07-03T12:00:00Z",
+        "summary": "First telling.",
+        "author": "Zorya"
+      }
+    ]
+  }
+]

@@ -6,7 +6,7 @@ import { storage } from './services/storage.js';
 
 const initialState = {
   bloom: 'The First Bloom',
-  version: '0.1.0',
+  version: '0.7.0',
 
   // Canon data (populated by the data layer in a future sprint)
   books: [],
@@ -49,14 +49,7 @@ export function subscribe(fn) {
 
 export function recordOpened(item) {
   storage.set('bpc-last-opened', item);
-  const recent = storage.get('bpc-recent', []).filter((r) => r.href !== item.href);
-  recent.unshift(item);
-  storage.set('bpc-recent', recent.slice(0, 8));
   setState({ lastOpened: item });
-}
-
-export function getRecent() {
-  return storage.get('bpc-recent', []);
 }
 
 storage.set('bpc-last-visit', new Date().toISOString());

@@ -1,1 +1,9 @@
-[]
+[
+  { "id": "SYM-001", "glyph": "🐢",    "name": "Turtle",      "definition": "", "status": "canon" },
+  { "id": "SYM-002", "glyph": "👑",    "name": "Crown",       "definition": "", "status": "canon" },
+  { "id": "SYM-003", "glyph": "🌸",    "name": "Black Poppy", "definition": "", "status": "canon" },
+  { "id": "SYM-004", "glyph": "🦋",    "name": "Butterfly",   "definition": "", "status": "canon" },
+  { "id": "SYM-005", "glyph": "🐾",    "name": "Paw",         "definition": "", "status": "canon" },
+  { "id": "SYM-006", "glyph": "11:11", "name": "11:11",       "definition": "", "status": "canon" },
+  { "id": "SYM-007", "glyph": "⭐",    "name": "Pegasus",     "definition": "", "status": "canon" }
+]
