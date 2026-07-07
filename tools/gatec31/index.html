@@ -371,6 +371,18 @@
   .score-checks li.ok::before { content: '✓'; color: var(--green-light); }
   .score-checks li.warn::before { content: '⚠'; color: var(--amber); }
 
+  .variant-row {
+    display: flex; align-items: flex-start; gap: 0.7rem;
+    width: 100%; text-align: left;
+    background: var(--panel-deep); border: 1px solid var(--divider);
+    border-radius: 2px; padding: 0.65rem 0.8rem; margin-top: 0.45rem;
+    color: var(--horizon); font-size: 0.88rem; line-height: 1.4;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .variant-row:hover { border-color: rgba(0,168,232,0.5); background: rgba(0,168,232,0.06); color: var(--white); }
+  .variant-row .seo-badge { flex-shrink: 0; margin-top: 0.1rem; }
+  .variant-row .v-current { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; flex-shrink: 0; margin-top: 0.25rem; }
+
   /* ── CHECKLISTS (RUNWAY) ── */
   .task-check {
     display: flex; gap: 0.7rem; align-items: flex-start;
@@ -759,6 +771,11 @@
   <p class="lede">A title has two jobs: match what people search, and make the curious click. The analyzer scores both. Write, score, refine, then send the winner straight to the Hangar.</p>
 
   <div class="card">
+    <div class="callout" id="seoEditBanner" hidden style="margin:0 0 1rem;">
+      <p>Retitling a Hangar video: <strong id="seoEditOld"></strong><br>
+      <span style="color:var(--muted); font-size:0.8rem;">"Update Video Title" saves your revision back to that flight plan.</span>
+      <button type="button" class="btn ghost small" id="seoEditCancel" style="margin-left:0.6rem;">Cancel</button></p>
+    </div>
     <div class="field">
       <label for="seoTitle">Title under test</label>
       <input type="text" id="seoTitle" maxlength="120" placeholder="Type or paste a video title…">
@@ -772,8 +789,15 @@
     </div>
     <ul class="score-checks" id="seoChecks"></ul>
     <div style="margin-top:1rem; display:flex; gap:0.6rem; flex-wrap:wrap;">
+      <button class="btn" id="seoUpdateVideo" hidden>Update Video Title</button>
+      <button class="btn ghost" id="seoImprove">Improve This Title</button>
       <button class="btn" id="seoToHangar">Send to Hangar</button>
       <button class="btn ghost" id="seoCopyTitle">Copy Title</button>
+    </div>
+    <div id="seoVariants" hidden style="margin-top:1.2rem;">
+      <h3 style="font-size:0.9rem;">Rebuilt variants — click one to load it</h3>
+      <p style="font-size:0.78rem; color:var(--muted);">Deterministic fixes only: keyword front-loading, bracket qualifiers, curiosity structure, de-shouting. Facts like runway numbers and altitudes are yours to add — the tool won't invent them.</p>
+      <div id="seoVariantList" style="margin-top:0.6rem;"></div>
     </div>
   </div>
 
@@ -1654,6 +1678,112 @@ function scoreTitle(title) {
 }
 
 const seoInput = $('#seoTitle');
+let seoEditingId = null;
+
+function enterSeoEdit(video) {
+  seoEditingId = video.id;
+  $('#seoEditOld').textContent = video.title;
+  $('#seoEditBanner').hidden = false;
+  $('#seoUpdateVideo').hidden = false;
+}
+function exitSeoEdit() {
+  seoEditingId = null;
+  $('#seoEditBanner').hidden = true;
+  $('#seoUpdateVideo').hidden = true;
+}
+$('#seoEditCancel').addEventListener('click', () => { exitSeoEdit(); toast('Edit cancelled — the Hangar title is unchanged.'); });
+
+$('#seoUpdateVideo').addEventListener('click', () => {
+  const v = db.videos.find(x => x.id === seoEditingId);
+  const t = seoInput.value.trim();
+  if (!v) { exitSeoEdit(); toast('That video is no longer in the Hangar.'); return; }
+  if (!t) { toast('The title is empty — write the revision first.'); return; }
+  if (t === v.title) { toast('No change yet — edit the title, then update.'); return; }
+  v.title = t;
+  save();
+  exitSeoEdit();
+  renderVideos();
+  activateTab('hangar');
+  toast('Title updated on the flight plan.');
+});
+
+/* — Title improver: deterministic rebuilds from the failed checks — */
+function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+function titleCaseIfShouting(t) {
+  const letters = t.replace(/[^a-zA-Z]/g, '');
+  const caps = t.replace(/[^A-Z]/g, '').length;
+  if (!letters || caps / letters.length < 0.5) return t;
+  return t.toLowerCase().replace(/\b([a-z])/g, (m, c) => c.toUpperCase())
+    .replace(/\b(msfs|pmdg|kden|klax|vr|ils|atc|rnav|vfr|ifr|fl\d+)\b/gi, s => s.toUpperCase());
+}
+
+function buildVariants(raw, kwPref) {
+  const base = titleCaseIfShouting(raw.trim().replace(/\s+/g, ' '));
+  if (!base) return [];
+  const lower = base.toLowerCase();
+  const inTitleKw = KEYWORDS.find(k => lower.includes(k.toLowerCase()));
+  const kw = (kwPref || '').trim() || inTitleKw || 'MSFS 2024';
+
+  const frontload = t => {
+    const tl = t.toLowerCase(), kl = kw.toLowerCase();
+    if (tl.indexOf(kl) === -1) return `${kw} — ${t}`;
+    if (tl.indexOf(kl) < 40) return null; // already front-loaded
+    const stripped = t.replace(new RegExp('[\\s—:,-]*' + escapeRegex(kw) + '[\\s—:,-]*', 'i'), ' ')
+      .replace(/\s{2,}/g, ' ').replace(/^[\s—:,-]+|[\s—:,-]+$/g, '');
+    return stripped ? `${kw} — ${stripped}` : null;
+  };
+  const bracket = t => /\(|\[/.test(t) ? null
+    : `${t} ${/msfs|flight sim/i.test(t) ? '(Full VR Flight)' : '(MSFS 2024)'}`;
+  const curiosity = t => (/—|:|\?|…|\.\.\./.test(t) || /here'?s what|what happened|until/i.test(t)) ? null
+    : `${t} — Here's What Happened`;
+
+  const cands = new Set();
+  if (base !== raw.trim().replace(/\s+/g, ' ')) cands.add(base); // the de-shouted version itself
+  [frontload, bracket, curiosity].forEach(fn => { const r = fn(base); if (r) cands.add(r); });
+  // stacked: apply every applicable fix in sequence
+  let stacked = base;
+  [frontload, curiosity, bracket].forEach(fn => { const r = fn(stacked); if (r) stacked = r; });
+  if (stacked !== base) cands.add(stacked);
+
+  return [...cands]
+    .filter(t => t.length <= 85 && t.toLowerCase() !== lower)
+    .map(t => ({ title: t, score: scoreTitle(t).score }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4);
+}
+
+function renderVariants() {
+  const raw = seoInput.value.trim();
+  if (!raw) { toast('Write a title first — then I\'ll rebuild it.'); return; }
+  const baseScore = scoreTitle(raw).score;
+  const variants = buildVariants(raw, $('#descKeyword').value);
+  const wrap = $('#seoVariants');
+  const list = $('#seoVariantList');
+  wrap.hidden = false;
+  if (!variants.length) {
+    list.innerHTML = `<p style="font-size:0.84rem;">Nothing mechanical left to fix at ${baseScore}/100 — the remaining points need real specifics (a number, a runway, an altitude) only you can add.</p>`;
+    return;
+  }
+  const badge = s => `<span class="seo-badge ${s >= 80 ? 's-good' : s >= 60 ? 's-mid' : 's-low'}">${s}</span>`;
+  list.innerHTML =
+    `<div class="variant-row" style="cursor:default; opacity:0.75;">${badge(baseScore)}<span>${esc(raw)}</span><span class="v-current">current</span></div>` +
+    variants.map((v, i) => `<button type="button" class="variant-row" data-variant="${i}">${badge(v.score)}<span>${esc(v.title)}</span></button>`).join('');
+  list._variants = variants;
+}
+
+$('#seoImprove').addEventListener('click', renderVariants);
+$('#seoVariantList').addEventListener('click', e => {
+  const b = e.target.closest('[data-variant]');
+  if (!b) return;
+  const v = $('#seoVariantList')._variants[Number(b.dataset.variant)];
+  if (!v) return;
+  seoInput.value = v.title;
+  renderSeo();
+  renderVariants(); // refresh scores relative to the newly loaded title
+  toast(seoEditingId ? 'Variant loaded — "Update Video Title" saves it to the Hangar.' : 'Variant loaded into the title under test.');
+});
+
 function renderSeo() {
   const { score, checks, verdict } = scoreTitle(seoInput.value);
   const hasTitle = !!seoInput.value.trim();
@@ -1666,7 +1796,10 @@ function renderSeo() {
   $('#seoChecks').innerHTML = checks.map(c =>
     `<li class="${c.ok ? 'ok' : ''}${c.warn ? ' warn' : ''}">${esc(c.text)}</li>`).join('');
 }
-seoInput.addEventListener('input', renderSeo);
+seoInput.addEventListener('input', () => {
+  renderSeo();
+  $('#seoVariants').hidden = true; // typed edits invalidate the generated list
+});
 
 $('#keywordBank').innerHTML = KEYWORDS.map(k => `<button type="button" class="chip" data-kw="${esc(k)}">${esc(k)}</button>`).join('');
 $('#keywordBank').addEventListener('click', e => {
@@ -1833,6 +1966,8 @@ $('#videoList').addEventListener('click', e => {
     const v = db.videos.find(x => x.id === tune.dataset.tune);
     seoInput.value = v.title;
     if (v.keyword) $('#descKeyword').value = v.keyword;
+    enterSeoEdit(v);
+    $('#seoVariants').hidden = true;
     activateTab('seo');
     renderSeo();
     seoInput.focus();
