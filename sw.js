@@ -2,7 +2,7 @@
 // Works at any base path, including GitHub Pages project sites.
 // Bump CACHE_VERSION on each release to invalidate old caches.
 
-const CACHE_VERSION = 'bpc-v0.7.0';
+const CACHE_VERSION = 'bpc-v0.7.1';
 const SHELL = [
   './',
   './index.html',
@@ -70,7 +70,8 @@ const SHELL = [
   './src/styles/entry.css',
   './src/styles/relationship.css',
   './src/styles/atelier.css',
-  './src/styles/print.css'
+  './src/styles/print.css',
+  './tools/gatec31/index.html'
 ];
 
 self.addEventListener('install', (event) => {
