@@ -5,7 +5,7 @@ Author: Rachael Nike
 
 The living Canon of the Black Poppy Universe — a collection of principles, symbols, systems, and stories uncovered through creating.
 
-Live: https://rachaelnike-queen.github.io/blackpoppycanon/
+Live: https://blackpoppyethos.github.io/blackpoppycanon/
 
 ---
 
@@ -49,7 +49,7 @@ A vanilla JavaScript Progressive Web App. Single-page application, native ES mod
 
 1. All of these files go at the **root of the repository** (index.html must be at the top level, not inside a folder).
 2. Repo → Settings → Pages → Source: **Deploy from a branch** → Branch: `main`, folder `/ (root)` → Save.
-3. Wait ~1 minute, then open https://rachaelnike-queen.github.io/blackpoppycanon/
+3. Wait ~1 minute, then open https://blackpoppyethos.github.io/blackpoppycanon/
 4. On your phone: open the URL → browser menu → **Add to Home Screen**. The Canon installs like an app and works offline.
 
 To update: change files, commit, push. Pages redeploys automatically.
