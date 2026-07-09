@@ -67,7 +67,10 @@ blackpoppycanon/                      ← this repo
   README.md                           ← Canon: architecture & deploy guide
   CLAUDE.md                           ← Canon: engineering constitution
   docs/
-    APP-INVENTORY.md                  ← this file — the index of everything
+    index.html                        ← THE DOCUMENTATION HUB — this inventory + both
+                                        Flight Deck guides as one readable web page
+                                        (open this, not the .md files)
+    APP-INVENTORY.md                  ← this file — plain-text form of the inventory
   tools/
     gatec31/
       index.html                      ← GATEC31 Flight Deck (v1.1, one file, everything inline)

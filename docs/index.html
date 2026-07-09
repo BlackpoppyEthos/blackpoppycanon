@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Black Poppy Universe — documentation hub: the app inventory and audit, plus the GATEC31 Flight Deck implementation and user guides, in one readable page.">
+<title>Black Poppy Universe — Documentation</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F5F0E8'/%3E%3Ccircle cx='16' cy='16' r='8' fill='%232A1B3D'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23E24E9B'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F5F0E8;
+    --paper-deep: #EDE6D9;
+    --ink: #211A2B;
+    --ink-soft: #4A4055;
+    --purple: #2A1B3D;
+    --dusty: #8B7A9E;
+    --rose: #A64D6D;
+    --pink: #E24E9B;
+    --silver: #B9B4BE;
+    --line: rgba(42,27,61,0.16);
+    --card: #FBF8F2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.75;
+  }
+  .topnav {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(245,240,232,0.96);
+    border-bottom: 1px solid var(--line);
+    padding: 0.7rem 1.2rem;
+    display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap;
+  }
+  .topnav .brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.25rem; letter-spacing: 0.06em; color: var(--purple);
+    white-space: nowrap;
+  }
+  .topnav a {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.95rem; letter-spacing: 0.08em;
+    color: var(--ink-soft); text-decoration: none;
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+  }
+  .topnav a:hover { color: var(--rose); background: var(--paper-deep); }
+  main { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.4rem 5rem; }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    letter-spacing: 0.03em; line-height: 1.05;
+    color: var(--purple); margin-bottom: 0.4rem;
+  }
+  .subtitle { font-style: italic; color: var(--ink-soft); margin-bottom: 2.4rem; }
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; letter-spacing: 0.04em; color: var(--purple);
+    margin: 3.2rem 0 0.8rem; padding-top: 1.6rem;
+    border-top: 1px solid var(--line);
+  }
+  h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.35rem; letter-spacing: 0.04em; color: var(--rose);
+    margin: 1.8rem 0 0.5rem;
+  }
+  h4 { font-size: 1rem; margin: 1.4rem 0 0.4rem; color: var(--purple); }
+  p { margin-bottom: 0.9rem; }
+  p, li { color: var(--ink); }
+  em { color: var(--ink-soft); }
+  strong { color: var(--purple); }
+  ul, ol { padding-left: 1.4rem; margin-bottom: 1rem; }
+  li { margin-bottom: 0.45rem; }
+  a { color: var(--rose); }
+  a:hover { color: var(--pink); }
+
+  .doc-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(42,27,61,0.06);
+    padding: 1.2rem 1.5rem;
+    margin: 1.2rem 0;
+  }
+  .status { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.06em; font-size: 0.95rem; padding: 0.1rem 0.6rem; border-radius: 10px; white-space: nowrap; }
+  .status.live { background: rgba(82,140,90,0.14); color: #3d6b45; }
+  .status.waiting { background: rgba(166,77,109,0.13); color: var(--rose); }
+  .status.unknown { background: rgba(139,122,158,0.16); color: #5d5170; }
+
+  .table-scroll { overflow-x: auto; margin: 1rem 0; }
+  table { border-collapse: collapse; width: 100%; background: var(--card); font-size: 0.92rem; }
+  th {
+    font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.06em; font-weight: 400;
+    text-align: left; color: var(--purple);
+    border-bottom: 2px solid var(--dusty);
+    padding: 0.55rem 0.8rem; white-space: nowrap;
+  }
+  td { border-bottom: 1px solid var(--line); padding: 0.55rem 0.8rem; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+
+  code, pre {
+    font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+    font-size: 0.85em;
+    background: var(--paper-deep);
+    border-radius: 4px;
+  }
+  code { padding: 0.1em 0.35em; }
+  pre { padding: 1rem 1.2rem; overflow-x: auto; margin: 1rem 0; line-height: 1.55; border: 1px solid var(--line); }
+  pre code { background: none; padding: 0; }
+
+  .callout {
+    background: rgba(226,78,155,0.06);
+    border-left: 3px solid var(--pink);
+    border-radius: 0 6px 6px 0;
+    padding: 0.9rem 1.2rem; margin: 1.4rem 0;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  .checklist li { list-style: none; position: relative; padding-left: 1.6rem; }
+  .checklist li::before { content: '◆'; position: absolute; left: 0; color: var(--rose); font-size: 0.7rem; top: 0.35rem; }
+  .footer {
+    text-align: center; margin-top: 4rem; padding-top: 1.6rem;
+    border-top: 1px solid var(--line);
+    font-style: italic; color: var(--dusty); font-size: 0.9rem;
+  }
+  @media print {
+    .topnav { display: none; }
+    body { background: #fff; }
+    h2 { break-before: page; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav" aria-label="Document sections">
+  <span class="brand">BLACK POPPY UNIVERSE · DOCS</span>
+  <a href="#inventory">App Inventory</a>
+  <a href="#userguide">Flight Deck — User Guide</a>
+  <a href="#implementation">Flight Deck — Implementation</a>
+</nav>
+
+<main>
+<h1>Everything We've Built,<br>and Where It Lives</h1>
+<p class="subtitle">The documentation hub — three documents, one page. Audited July 9, 2026, by Fable. Bookmark this file; it is the map.</p>
+
+<!-- ═══════════════════ APP INVENTORY ═══════════════════ -->
+<h2 id="inventory">Part One · The App Inventory &amp; Audit</h2>
+<p><strong>What this is, plainly:</strong> the master list of every app we've created — its latest version, where its code lives, whether it's live on the web, and where its documentation is. When you wonder "where did that thing go?", the answer is on this list. It gets updated every time an app ships or changes.</p>
+
+<h3>App 1 — Black Poppy Canon (the PWA)</h3>
+<div class="doc-card">
+  <div class="table-scroll"><table>
+    <tr><th>What it is</th><td>The front door to the Black Poppy Universe — the Library, the twelve Books, entries with versioning, the Atelier worktable, relationships, the Symbolarium.</td></tr>
+    <tr><th>Version</th><td><strong>v0.7.0</strong> — The First Bloom · Sprint 4.7 (The Root System)</td></tr>
+    <tr><th>Where the code is</th><td>GitHub → <code>BlackpoppyEthos/blackpoppycanon</code> → <code>main</code> branch → repository root</td></tr>
+    <tr><th>Status</th><td><span class="status live">LIVE</span> — merged to main; GitHub Pages deploys it automatically</td></tr>
+    <tr><th>Live address</th><td><a href="https://blackpoppyethos.github.io/blackpoppycanon/">blackpoppyethos.github.io/blackpoppycanon</a></td></tr>
+    <tr><th>Documentation</th><td><code>README.md</code> (architecture &amp; deploy guide) and <code>CLAUDE.md</code> (the engineering constitution) — both in the repo root</td></tr>
+    <tr><th>Your data</th><td>Entries written in-app persist in the browser through the adapter; Google Sheets backend arrives in Sprint 6</td></tr>
+  </table></div>
+  <p style="margin:0.6rem 0 0; font-size:0.92rem;"><em>History this week: uploaded to GitHub July 4 (first upload) and July 5 (Sprint 4.7 — Root System, relationships, Atelier rebuild).</em></p>
+</div>
+
+<h3>App 2 — GATEC31 YouTube Flight Deck</h3>
+<div class="doc-card">
+  <div class="table-scroll"><table>
+    <tr><th>What it is</th><td>The YouTube channel operations tool for @gatec31 — daily subscriber/views/watch-hours tracking with charts and milestone forecasts, a video pipeline, an SEO title lab that rewrites titles, a thumbnail studio, the 90-day growth checklist, and a revenue tracker.</td></tr>
+    <tr><th>Version</th><td><strong>v1.1</strong> (v1.0 built July 7 · v1.1 added title write-back &amp; the improver, July 9)</td></tr>
+    <tr><th>Where the code is</th><td>Same repo → branch <code>claude/gatec31-youtube-analytics-fpbo3n</code> → one file: <code>tools/gatec31/index.html</code></td></tr>
+    <tr><th>Status</th><td><span class="status waiting">NOT MERGED YET</span> — it goes live the moment the branch is merged into <code>main</code></td></tr>
+    <tr><th>Live address (after merge)</th><td><a href="https://blackpoppyethos.github.io/blackpoppycanon/tools/gatec31/">blackpoppyethos.github.io/blackpoppycanon/tools/gatec31</a></td></tr>
+    <tr><th>Documentation</th><td>Parts Two and Three of this very page (also stored beside the app in the repo)</td></tr>
+    <tr><th>Your data</th><td>Lives in the browser you use it in. Weekly JSON backups from the Revenue tab are the safety net.</td></tr>
+  </table></div>
+  <p style="margin:0.6rem 0 0; font-size:0.92rem;"><em>Lineage: began as the static "Cleared for Takeoff" strategy page (June 2026). All of that strategy — the audit, the Nas flywheel, the pillars, the video blueprint, the 90-day plan — now lives inside the tool's Strategy and Runway tabs. Verified by a 51-check automated browser test suite.</em></p>
+</div>
+
+<h3>Outside this repo</h3>
+<div class="doc-card">
+  <p><strong>BlackpoppyEthos/Book-of-Shadows-Experience</strong> <span class="status unknown">NOT YET AUDITED</span></p>
+  <p style="margin-bottom:0;">A second repository in your account, last pushed July 8, 2026. The session that produced this audit could only see <code>blackpoppycanon</code>. To fold it into the inventory, tell Fable: <em>"add BlackpoppyEthos/Book-of-Shadows-Experience to the session."</em> And if any apps were created this week as chat artifacts but never pushed to a repo, they aren't versioned anywhere — each finished app deserves a folder in a repo, like <code>tools/gatec31/</code>, where it gets history, a live URL, and its docs beside it.</p>
+</div>
+
+<h3>Audit findings — July 9, 2026</h3>
+<ol>
+  <li><strong>Fixed:</strong> the Canon's README pointed at a stale web address (<code>rachaelnike-queen.github.io</code>); the repo lives under BlackpoppyEthos, so the link now reads <code>blackpoppyethos.github.io</code>.</li>
+  <li><strong>Needs you:</strong> merge the <code>claude/gatec31-youtube-analytics-fpbo3n</code> branch. That single merge publishes the Flight Deck, this documentation hub, and the README fix all at once.</li>
+  <li><strong>Verify after merging:</strong> the build environment couldn't reach the live site to confirm it (its network is restricted) — open the two live addresses above in your browser once merged.</li>
+  <li><strong>Docs coverage is now complete</strong> for everything in this repo — and this page exists so none of it requires opening a <code>.md</code> file ever again.</li>
+</ol>
+
+<h3>The map</h3>
+<pre><code>blackpoppycanon/                    ← the repo
+  index.html, src/, sw.js …         ← Black Poppy Canon PWA  (v0.7.0, live)
+  README.md · CLAUDE.md             ← Canon documentation
+  docs/
+    index.html                      ← THIS PAGE — the documentation hub
+    APP-INVENTORY.md                ← same inventory, plain-text form
+  tools/gatec31/
+    index.html                      ← GATEC31 Flight Deck  (v1.1, awaiting merge)
+    IMPLEMENTATION.md · USER-GUIDE.md
+
+Book-of-Shadows-Experience/         ← separate repo, not yet audited</code></pre>
+
+<!-- ═══════════════════ USER GUIDE ═══════════════════ -->
+<h2 id="userguide">Part Two · Flight Deck User Guide</h2>
+<p><em>For the pilot of @gatec31 — everything the tool does, and the two rituals that make it work.</em></p>
+
+<h3>Getting started</h3>
+<p><strong>Hosted (once merged):</strong> open the live address from Part One in any browser. On a phone: browser menu → <em>Add to Home Screen</em>.<br>
+<strong>Standalone:</strong> save the <code>index.html</code> file anywhere and double-click it. Identical behavior.</p>
+<div class="callout"><p><strong>Know this one thing about your data:</strong> it lives in the browser you use — not in the file, not in a cloud. Same browser, same computer: your data is there. Different browser or device: a fresh, empty deck. Pick one browser and stay loyal to it, and export backups (below).</p></div>
+<p>First visit? Press <strong>Load Demo Data</strong> (bottom of the Revenue tab) to see everything alive, explore, then <strong>Reset Everything</strong> and begin for real.</p>
+
+<h3>The daily ritual — thirty seconds</h3>
+<ol>
+  <li>Open YouTube Studio → Analytics.</li>
+  <li>Open the Flight Deck; "Today's Flight Plan" is waiting on the first tab.</li>
+  <li>Enter four numbers: <strong>Subscribers</strong> (total), <strong>Views</strong> (last 28 days), <strong>Watch hours</strong> (28 days), <strong>Est. revenue</strong> (28 days — optional).</li>
+  <li>Press <strong>File Today's Report</strong>.</li>
+</ol>
+<p>That's the whole habit. The charts, the growth rate, the "you'll reach 2,500 subscribers on November 9" forecast, and the streak counter are all computed from those daily reports. The streak counter is there to guilt you, lovingly.</p>
+
+<h3>The tabs, one by one</h3>
+<div class="table-scroll"><table>
+  <tr><th>Flight Deck</th><td>The instrument panel: current subscribers with the week's change, trend tiles, your next milestone with an estimated arrival date, the subscriber chart (hover it for exact values; "View as table" beneath it for plain numbers), and your next three unchecked runway tasks.</td></tr>
+  <tr><th>Daily Log</th><td>The flight recorder: every report you've filed, day-over-day changes, editable, with a notes field ("published fog video today") so spikes have explanations later. Export CSV for spreadsheets.</td></tr>
+  <tr><th>Hangar</th><td>The video pipeline: every video is a flight plan moving idea → scripted → recorded → edited → published, carrying its hook, target keyword, and a live SEO score. About 48 hours after publishing, log its Views, CTR, and AVD — the tool judges them against the bars that matter (CTR ≥ 5%, AVD ≥ 50%).</td></tr>
+  <tr><th>SEO Tower</th><td>Where titles get built. Type a title and it's scored live against seven checks. <strong>Improve This Title</strong> rebuilds it (keyword to the front, "(MSFS 2024)" added, curiosity structure, no shouting) and shows scored variants — click one to use it. From the Hangar, "Tune title" opens a video here; <strong>Update Video Title</strong> saves your revision back onto it. The tool never invents facts — runway numbers and altitudes are yours, and they're usually the last points between 85 and 100. Also here: the keyword bank, the description builder, and the tag generator.</td></tr>
+  <tr><th>Thumbnail Lab</th><td>Design at 1280×720, judge at 168 pixels — the size where the click actually happens. Background presets or your own VR screenshot, darken slider, a 3–4 word headline, live search-size previews, and layout guides (never exported). Download the exact PNG YouTube wants.</td></tr>
+  <tr><th>Strategy</th><td>The standing playbook: the channel audit, the Nas.com flywheel, the three content pillars (40% Destination / 35% Tech &amp; Setup / 25% Real World × Sim), and the minute-by-minute video blueprint. Read it when planning; the other tabs execute it.</td></tr>
+  <tr><th>Runway</th><td>The 90-day plan as living checklists — progress saves itself, and the Flight Deck nags you with what's next. Below it, the six-box Weekly Review that resets every Sunday.</td></tr>
+  <tr><th>Revenue</th><td>The six-stream monetization stack: toggle a stream Active when you launch it, type what it earned this month, watch the total climb toward $500/month. The Mission Data card here is also where backups live.</td></tr>
+</table></div>
+
+<h3>The weekly ritual — fifteen minutes, Sundays</h3>
+<ul class="checklist">
+  <li>Check CTR and AVD on the week's uploads in Studio</li>
+  <li>Flag anything under 5% CTR for a thumbnail retest in the Lab</li>
+  <li>Reply to every comment from the last seven days</li>
+  <li>Post the Sunday community poll or route vote</li>
+  <li>Cut at least two Shorts from the week's footage</li>
+  <li>Confirm the logging streak is intact</li>
+</ul>
+
+<h3>Backups — weekly, please</h3>
+<p><strong>Revenue tab → Export Backup (JSON).</strong> One file, everything in it. <strong>Import Backup</strong> restores it — including onto a new computer or a different browser. The CSV export is for spreadsheets; the JSON backup is the real safety net.</p>
+
+<h3>Quick answers</h3>
+<ul>
+  <li><strong>New version of the HTML file — do I lose data?</strong> No. Data lives in the browser, not the file. Replace the file in the same folder, or use the hosted address.</li>
+  <li><strong>A number looks wrong?</strong> Daily Log → Edit on that row. One entry per date; saving the same date updates it.</li>
+  <li><strong>What actually grows a channel?</strong> In order: AVD ≥ 50% (make the middles of videos better), CTR ≥ 5% (make thumbnails and titles better at 168 pixels), and consistency. Subscriber count follows those three — which is why it isn't the number the tool asks you to chase.</li>
+</ul>
+
+<!-- ═══════════════════ IMPLEMENTATION ═══════════════════ -->
+<h2 id="implementation">Part Three · Flight Deck Implementation Guide</h2>
+<p><em>For engineers (and future Fables) maintaining or extending the tool. Skim-safe: you only need this part if you're changing code.</em></p>
+
+<h3>Design constraints</h3>
+<ol>
+  <li><strong>One self-contained file.</strong> All CSS and JavaScript live inline in <code>tools/gatec31/index.html</code>. No build step, no imports. It must keep working when saved to a desktop and double-clicked. Only external dependency: Google Fonts, degrading gracefully offline.</li>
+  <li><strong>No invented facts.</strong> The title improver applies only mechanical transformations — never fabricated numbers, runways, or events.</li>
+  <li><strong>Repo rules apply:</strong> relative paths, no frameworks, WCAG AA (keyboard tabs with arrow keys, aria states, visible focus, reduced-motion respected, a table view behind every chart).</li>
+</ol>
+
+<h3>File anatomy</h3>
+<p>The file reads top to bottom: CSS (design tokens in <code>:root</code>, then styles grouped by feature) → markup (topbar + eight tab panels + toast + footer) → one <code>&lt;script&gt;</code> in labeled blocks: <code>SAFE STORAGE</code>, <code>UTILS</code>, <code>TABS</code>, <code>CHART ENGINE</code>, <code>FLIGHT DECK</code>, <code>DAILY LOG</code>, <code>SEO SCORING</code> (+ editing/variants), <code>HANGAR</code>, <code>RUNWAY</code>, <code>REVENUE</code>, <code>THUMBNAIL LAB</code>, <code>DATA</code>, <code>BOOT</code>.</p>
+
+<h3>Data model</h3>
+<p>Everything persists under one localStorage key, <code>gatec31.flightdeck.v1</code>:</p>
+<pre><code>{
+  dailyLog: [{ date: 'YYYY-MM-DD', subs, views, watch, rev, notes }],  // one per date
+  videos:   [{ id, title, pillar: 'dest|tech|real|short',
+               status: 'idea|scripted|recorded|edited|published',
+               hook, keyword, stats: { views, ctr, avd }, created }],
+  tasks:    { 'p1-0': true, … },                 // runway checkboxes: phaseId-index
+  weekly:   { week: 'YYYY-MM-DD', checked: {} }, // week = Sunday; mismatch = auto-reset
+  revenue:  { streamId: { active, amounts: { 'YYYY-MM': n } } },
+  meta:     { created }
+}</code></pre>
+<p><code>subs</code> is the cumulative total; <code>views</code>/<code>watch</code>/<code>rev</code> are Studio's trailing 28-day figures. Deltas and rates are computed, never stored. Changing this shape means a new key (<code>.v2</code>) and a migration — never quietly change what a field means.</p>
+
+<h3>The parts with actual logic</h3>
+<ul>
+  <li><strong>Milestone ETA:</strong> linear growth rate over up to a 14-day window → days to the next milestone. Deliberately simple; resist curve-fitting noisy small-channel data.</li>
+  <li><strong>Chart engine:</strong> hand-built SVG. Hairline gridlines, 2px line, 10% area wash, ringed end-dot, direct end label, crosshair + tooltip, table view. Series colors <code>--series-1…4</code> were validated for colorblind separation and ≥3:1 contrast on the panel — re-validate if you swap them.</li>
+  <li><strong><code>scoreTitle</code>:</strong> additive checks (length band 40–65, niche keyword + front-loaded, number, power word, curiosity, not-shouting, bracket bonus), capped at 100. The Hangar reuses it, so one change updates every card badge.</li>
+  <li><strong><code>buildVariants</code>:</strong> de-shout (preserving MSFS/PMDG/KDEN/VR caps), then front-load / bracket / curiosity transforms, individually and stacked; scored, deduped, top four. Keyword priority: keyword field → detected in title → "MSFS 2024".</li>
+  <li><strong>Thumbnail Lab:</strong> the main canvas, both previews, and the PNG export all render through one function (<code>drawThumbBase</code>) so they can never drift apart; layout guides are draw-time only.</li>
+</ul>
+
+<h3>Extension recipes</h3>
+<ul>
+  <li><strong>New keyword</strong> → add to <code>KEYWORDS</code> (bank chips, scoring, and variant detection all update).</li>
+  <li><strong>New revenue stream</strong> → add to <code>STREAMS</code>; persistence and totals are automatic.</li>
+  <li><strong>New runway task</strong> → append to a phase's <code>tasks</code>. <strong>Append only</strong> — checkbox state is keyed by index; inserting mid-list re-maps saved checkmarks.</li>
+  <li><strong>New thumbnail preset</strong> → add to <code>BG_PRESETS</code>; the swatch and gradient come free.</li>
+  <li><strong>New tab</strong> → button in <code>#tabbar</code> + a <code>section.panel-view</code> + a render call in <code>activateTab</code>.</li>
+</ul>
+
+<h3>Deployment &amp; testing</h3>
+<ul>
+  <li><strong>Hosted:</strong> merging to <code>main</code> deploys via GitHub Pages. The tool is in the app shell's service-worker cache — shipping changes means bumping <code>CACHE_VERSION</code> in <code>/sw.js</code> (currently <code>bpc-v0.7.1</code>), or offline users get stale builds.</li>
+  <li><strong>Standalone:</strong> the same file can be saved and used directly; data stays in the browser profile, so replacing the file preserves it.</li>
+  <li><strong>Test before done:</strong> a 51-check Playwright browser suite (logging, charts and tooltips, pipeline, SEO scoring/variants/round-trip, canvas at both preview sizes, checklists, revenue math, reload persistence, zero console errors) run against the repo served from a parent directory to prove subpath safety.</li>
+</ul>
+
+<h3>Version log</h3>
+<div class="table-scroll"><table>
+  <tr><th>Version</th><th>Date</th><th>Commit</th><th>Change</th></tr>
+  <tr><td>v1.0</td><td>2026-07-07</td><td><code>73ce8dd</code></td><td>Initial build — eight tabs, tracking, charts, Hangar, SEO Tower, Thumbnail Lab, Runway, Revenue, backup</td></tr>
+  <tr><td>v1.1</td><td>2026-07-09</td><td><code>c42ac80</code></td><td>SEO Tower round-trip editing + deterministic title improver</td></tr>
+</table></div>
+
+<p class="footer">Noli illegitimi carborundum · 11:11</p>
+</main>
+</body>
+</html>
